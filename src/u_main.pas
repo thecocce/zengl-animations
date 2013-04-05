@@ -8,7 +8,7 @@ uses
   Classes, SysUtils, FileUtil, RTTIGrids, VirtualTrees, Forms, Controls,
   zglHeader, Graphics, Dialogs, Arrow, Menus, ExtCtrls, StdCtrls, ComCtrls,
   Buttons, ButtonPanel, u_animation, PropEdits, u_render, types, LCLType,
-  LResources, ScrollListBox, u_prop_form, u_db;
+  LResources, u_prop_form, u_db;
 
 const
   ITEMS_PER_SLOT = 3;

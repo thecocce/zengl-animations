@@ -6,8 +6,8 @@ uses
   {$IFDEF UNIX}{$IFDEF UseCThreads}
   cthreads,
   {$ENDIF}{$ENDIF}
-  Forms, Interfaces, zglHeader, runtimetypeinfocontrols, pl_virtualtrees,
-  u_main, u_animation, u_render, u_editorhistory, u_prop_form, u_db,
+  Forms, Interfaces, runtimetypeinfocontrols, pl_virtualtrees,
+  u_main, u_db, zglHeader, u_animation, u_render, u_editorhistory, u_prop_form,
   u_proj_form, u_preview_form;
 
 {$R *.res}
