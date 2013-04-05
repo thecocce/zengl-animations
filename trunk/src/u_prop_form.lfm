@@ -1,0 +1,154 @@
+object PropertiesForm: TPropertiesForm
+  Left = 304
+  Height = 378
+  Top = 201
+  Width = 460
+  Caption = 'PropertiesForm'
+  ClientHeight = 378
+  ClientWidth = 460
+  Position = poScreenCenter
+  LCLVersion = '1.1'
+  object ObjectProperties: TTIPropertyGrid
+    Left = 0
+    Height = 254
+    Top = 0
+    Width = 460
+    Align = alClient
+    BorderStyle = bsNone
+    DefaultItemHeight = 20
+    DefaultValueFont.Color = clWindowText
+    Filter = [tkInteger, tkChar, tkEnumeration, tkFloat, tkSet, tkMethod, tkSString, tkLString, tkAString, tkWString, tkVariant, tkArray, tkRecord, tkInterface, tkClass, tkObject, tkWChar, tkBool, tkInt64, tkQWord, tkDynArray, tkInterfaceRaw, tkProcVar, tkUString, tkUChar, tkHelper]
+    Indent = 16
+    NameFont.Color = clWindowText
+    NameFont.Style = [fsBold]
+    OnClick = ObjectPropertiesClick
+    ValueFont.Color = clMaroon
+  end
+  object ButtonsPanel: TButtonPanel
+    Left = 6
+    Height = 34
+    Top = 338
+    Width = 448
+    OKButton.Name = 'OKButton'
+    OKButton.DefaultCaption = True
+    OKButton.OnClick = OKButtonClick
+    HelpButton.Name = 'HelpButton'
+    HelpButton.DefaultCaption = True
+    CloseButton.Name = 'CloseButton'
+    CloseButton.DefaultCaption = True
+    CancelButton.Name = 'CancelButton'
+    CancelButton.DefaultCaption = True
+    TabOrder = 1
+    OnClick = ButtonsPanelClick
+    ShowButtons = [pbOK]
+  end
+  object PropContent: TPageControl
+    Left = 0
+    Height = 73
+    Top = 259
+    Width = 460
+    ActivePage = anTextureContent
+    Align = alBottom
+    ShowTabs = False
+    TabIndex = 1
+    TabOrder = 2
+    Visible = False
+    object anTexture: TTabSheet
+      Caption = 'anTexture'
+      ClientHeight = 68
+      ClientWidth = 463
+      object btnResetSize: TButton
+        Left = 6
+        Height = 32
+        Top = 7
+        Width = 119
+        Caption = 'Reset texture size'
+        OnClick = btnResetSizeClick
+        TabOrder = 0
+      end
+    end
+    object anTextureContent: TTabSheet
+      Caption = 'anTextureContent'
+      ClientHeight = 65
+      ClientWidth = 452
+      OnShow = anTextureContentShow
+      object objInfo: TLabel
+        Left = 0
+        Height = 25
+        Top = 0
+        Width = 452
+        Align = alTop
+        AutoSize = False
+        ParentColor = False
+        WordWrap = True
+      end
+      object btnUpdate: TButton
+        Left = 4
+        Height = 24
+        Top = 36
+        Width = 224
+        Anchors = [akRight, akBottom]
+        Caption = 'Update'
+        OnClick = btnUpdateClick
+        TabOrder = 0
+      end
+      object btnBrowse: TButton
+        Left = 228
+        Height = 24
+        Top = 36
+        Width = 136
+        Anchors = [akRight, akBottom]
+        Caption = 'Load from file ...'
+        OnClick = btnBrowseClick
+        TabOrder = 1
+      end
+      object btnExport: TButton
+        Left = 364
+        Height = 24
+        Top = 36
+        Width = 85
+        Anchors = [akRight, akBottom]
+        Caption = 'Export'
+        OnClick = btnExportClick
+        TabOrder = 2
+      end
+    end
+    object anAnimationBlender: TTabSheet
+      Caption = 'anAnimationBlender'
+      ClientHeight = 121
+      ClientWidth = 452
+      OnShow = anAnimationBlenderShow
+      object objApply: TCheckListBox
+        Left = 0
+        Height = 104
+        Top = 17
+        Width = 452
+        Align = alClient
+        BorderStyle = bsNone
+        ItemHeight = 0
+        OnClickCheck = objApplyClickCheck
+        TabOrder = 0
+      end
+      object ttl: TLabel
+        Left = 0
+        Height = 17
+        Top = 0
+        Width = 452
+        Align = alTop
+        AutoSize = False
+        Caption = 'Objects, thats apply by this blender to prototype:'
+        ParentColor = False
+        WordWrap = True
+      end
+    end
+  end
+  object prSplitter: TSplitter
+    Cursor = crVSplit
+    Left = 0
+    Height = 5
+    Top = 254
+    Width = 460
+    Align = alBottom
+    ResizeAnchor = akBottom
+  end
+end

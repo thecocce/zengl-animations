@@ -1,0 +1,157 @@
+[Box: ::u_animation - ::<<Unknown>>::TPersistent]
+X=3761
+Y=40
+
+[Box: ::u_animation - ::u_animation::anAnimatedSpriteTexture]
+X=445
+Y=2520
+
+[Box: ::u_animation - ::u_animation::anAnimatedSpriteTextureParams]
+X=680
+Y=529
+
+[Box: ::u_animation - ::u_animation::anAnimation]
+X=2342
+Y=1559
+
+[Box: ::u_animation - ::u_animation::anAnimationAnimationObject]
+X=3290
+Y=1373
+
+[Box: ::u_animation - ::u_animation::anAnimationBlender]
+X=1797
+Y=1888
+
+[Box: ::u_animation - ::u_animation::anAnimationInstance]
+X=3144
+Y=213
+
+[Box: ::u_animation - ::u_animation::anAnimationInstanceTree]
+X=3929
+Y=529
+
+[Box: ::u_animation - ::u_animation::anAnimationKeyFrameInstance]
+X=3529
+Y=1559
+
+[Box: ::u_animation - ::u_animation::anAnimationLayerAnimationInstance]
+X=3085
+Y=1044
+
+[Box: ::u_animation - ::u_animation::anAnimationLayerLookUpPointInstance]
+X=3749
+Y=1044
+
+[Box: ::u_animation - ::u_animation::anAnimationLayerObject]
+X=2440
+Y=1044
+
+[Box: ::u_animation - ::u_animation::anAnimationLayerObjectInstance]
+X=3644
+Y=819
+
+[Box: ::u_animation - ::u_animation::anAnimationLayerPointInstance]
+X=3540
+Y=1044
+
+[Box: ::u_animation - ::u_animation::anAnimationLayerSymbolInstance]
+X=4002
+Y=1044
+
+[Box: ::u_animation - ::u_animation::anAnimationLOInstanceHolder]
+X=3935
+Y=1373
+
+[Box: ::u_animation - ::u_animation::anAnimationLookUpPointObject]
+X=2817
+Y=1559
+
+[Box: ::u_animation - ::u_animation::anAnimationObjectAssigner]
+X=4009
+Y=213
+
+[Box: ::u_animation - ::u_animation::anAnimationPointObject]
+X=2645
+Y=1373
+
+[Box: ::u_animation - ::u_animation::anAnimationPrototype]
+X=1500
+Y=2191
+
+[Box: ::u_animation - ::u_animation::anAnimationSet]
+X=1338
+Y=2520
+
+[Box: ::u_animation - ::u_animation::anAnimationSymbolObject]
+X=2220
+Y=1373
+
+[Box: ::u_animation - ::u_animation::anAnimationTimeLine]
+X=2844
+Y=529
+
+[Box: ::u_animation - ::u_animation::anAtlasTexture]
+X=650
+Y=2191
+
+[Box: ::u_animation - ::u_animation::anAtlasTextureParams]
+X=785
+Y=819
+
+[Box: ::u_animation - ::u_animation::anAtlasTextureZone]
+X=1306
+Y=1044
+
+[Box: ::u_animation - ::u_animation::anFullTexture]
+X=240
+Y=2191
+
+[Box: ::u_animation - ::u_animation::anFullTextureParams]
+X=1099
+Y=529
+
+[Box: ::u_animation - ::u_animation::anLibrary]
+X=1177
+Y=3018
+
+[Box: ::u_animation - ::u_animation::anNamedObject]
+X=2498
+Y=213
+
+[Box: ::u_animation - ::u_animation::anObjectWithData]
+X=2999
+Y=121
+
+[Box: ::u_animation - ::u_animation::anStaticSpriteTexture]
+X=445
+Y=2191
+
+[Box: ::u_animation - ::u_animation::anStaticSpriteTextureParams]
+X=894
+Y=529
+
+[Box: ::u_animation - ::u_animation::anSymbol]
+X=1033
+Y=1559
+
+[Box: ::u_animation - ::u_animation::anTexture]
+X=492
+Y=1888
+
+[Box: ::u_animation - ::u_animation::anTextureContent]
+X=1295
+Y=2191
+
+[Box: ::u_animation - ::u_animation::anTextureParams]
+X=917
+Y=213
+
+[Box: ::u_animation - ::u_animation::anTransformClass]
+X=3026
+Y=1888
+
+[Diagram: ::u_animation]
+OffsetX=0
+OffsetY=0
+Visibility=1
+ShowAssoc=1
