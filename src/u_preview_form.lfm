@@ -1,0 +1,63 @@
+object PreviewBlenderForm: TPreviewBlenderForm
+  Left = 930
+  Height = 240
+  Top = 301
+  Width = 218
+  BorderStyle = bsToolWindow
+  Caption = 'Select blenders'
+  ClientHeight = 240
+  ClientWidth = 218
+  Position = poMainFormCenter
+  LCLVersion = '1.1'
+  object Label1: TLabel
+    Left = 0
+    Height = 32
+    Top = 0
+    Width = 218
+    Align = alTop
+    Alignment = taCenter
+    AutoSize = False
+    Caption = 'Please select blenders, that will be applied to this propotype on preview:'
+    ParentColor = False
+    WordWrap = True
+  end
+  object Panel1: TPanel
+    Left = 0
+    Height = 40
+    Top = 200
+    Width = 218
+    Align = alBottom
+    BevelOuter = bvNone
+    BorderStyle = bsSingle
+    ClientHeight = 36
+    ClientWidth = 214
+    TabOrder = 0
+    object btnOk: TButton
+      Left = 110
+      Height = 25
+      Top = 6
+      Width = 98
+      Caption = 'OK'
+      ModalResult = 1
+      TabOrder = 0
+    end
+    object btnCancel: TButton
+      Left = 6
+      Height = 25
+      Top = 6
+      Width = 96
+      Caption = 'Cancel'
+      ModalResult = 2
+      TabOrder = 1
+    end
+  end
+  object Blenders: TCheckListBox
+    Left = 0
+    Height = 168
+    Top = 32
+    Width = 218
+    Align = alClient
+    ItemHeight = 0
+    TabOrder = 1
+  end
+end
