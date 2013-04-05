@@ -21,7 +21,7 @@
       <BuildNr Value="29"/>
       <StringTable CompanyName="Anonymous" ProductName="Animation Editor" ProductVersion="1.0"/>
     </VersionInfo>
-    <BuildModes Count="3">
+    <BuildModes Count="2">
       <Item1 Name="debug" Default="True"/>
       <Item2 Name="release">
         <CompilerOptions>
@@ -32,27 +32,19 @@
           </Target>
           <SearchPaths>
             <IncludeFiles Value="$(ProjOutDir);$(LazarusDir)\lcl\units\i386-win32;$(LazarusDir)\lcl\include;C:\codetyphon\fpcsrc\;$(LazarusDir)\lcl\interfaces\win32;$(LazarusDir)\lcl\widgetset;$(LazarusDir)\components\rtticontrols;$(LazarusDir)\components\lazcontrols;$(LazarusDir)\components\pl_RX\source;$(LazarusDir)\components\rx;$(LazarusDir)\ideintf;$(LazarusDir)\lcl;$(LazarusDir)\lcl\forms;C:\codetyphon\lazarus\components\pl_lclextensions\source\include\;C:\codetyphon\lazarus\components\pl_VirtualTrees\source\include\"/>
-            <OtherUnitFiles Value="..;$(LazarusDir)\lcl\widgetset;$(LazarusDir)\lcl\interfaces\win32;$(LazarusDir)\components\rtticontrols;$(LazarusDir)\components\lazcontrols;$(LazarusDir)\components\pl_RX\source;C:\codetyphon\lazarus\components\pl_VirtualTrees\source\;$(LazarusDir)\components\rx;C:\codetyphon\lazarus\components\pl_VirtualTrees\;C:\codetyphon\lazarus\components\pl_VirtualTrees\source\units\;C:\codetyphon\lazarus\components\pl_lclextensions\source\;$(LazarusDir)\ideintf;$(LazarusDir)\lcl;$(LazarusDir)\lcl\forms;..\src;..\..\..\other\zengl\headers;..\..\..\other\components;..\..\..\common"/>
+            <OtherUnitFiles Value="..;$(LazarusDir)\lcl\widgetset;$(LazarusDir)\lcl\interfaces\win32;$(LazarusDir)\components\rtticontrols;$(LazarusDir)\components\lazcontrols;$(LazarusDir)\components\pl_RX\source;C:\codetyphon\lazarus\components\pl_VirtualTrees\source\;$(LazarusDir)\components\rx;C:\codetyphon\lazarus\components\pl_VirtualTrees\;C:\codetyphon\lazarus\components\pl_VirtualTrees\source\units\;C:\codetyphon\lazarus\components\pl_lclextensions\source\;$(LazarusDir)\ideintf;$(LazarusDir)\lcl;$(LazarusDir)\lcl\forms;..\src;..\units"/>
             <UnitOutputDirectory Value="../crap/$(TargetCPU)-$(TargetOS)"/>
           </SearchPaths>
-          <Parsing>
-            <SyntaxOptions>
-              <SyntaxMode Value="Delphi"/>
-            </SyntaxOptions>
-          </Parsing>
           <CodeGeneration>
             <SmartLinkUnit Value="True"/>
             <RelocatableUnit Value="True"/>
-            <Optimizations>
-              <OptimizationLevel Value="2"/>
-            </Optimizations>
           </CodeGeneration>
           <Linking>
             <Debugging>
               <GenerateDebugInfo Value="False"/>
               <DebugInfoType Value="dsDwarf2"/>
               <UseValgrind Value="True"/>
-              <StripSymbols Value="True"/>
+              <UseExternalDbgSyms Value="True"/>
             </Debugging>
             <LinkSmart Value="True"/>
             <Options>
@@ -63,78 +55,16 @@
           </Linking>
           <Other>
             <Verbosity>
-              <ShowWarn Value="False"/>
-              <ShowNotes Value="False"/>
               <ShowHints Value="False"/>
             </Verbosity>
-            <WriteFPCLogo Value="False"/>
             <CompilerMessages>
               <UseMsgFile Value="True"/>
             </CompilerMessages>
-            <CustomOptions Value="-dEDITOR -dHANDLER_FILE"/>
+            <CustomOptions Value="-dEDITOR -dHANDLER_FILE -dHANDLER_BUFFER"/>
             <CompilerPath Value="$(CompPath)"/>
           </Other>
         </CompilerOptions>
       </Item2>
-      <Item3 Name="release_linux">
-        <MacroValues Count="1">
-          <Macro1 Name="LCLWidgetType" Value="qt"/>
-        </MacroValues>
-        <CompilerOptions>
-          <Version Value="11"/>
-          <PathDelim Value="\"/>
-          <Target>
-            <Filename Value="../bin/bin/$(TargetOS)_AnimationEditor"/>
-          </Target>
-          <SearchPaths>
-            <IncludeFiles Value="$(ProjOutDir);$(LazarusDir)\lcl\units\i386-win32;$(LazarusDir)\lcl\include;C:\codetyphon\fpcsrc\;$(LazarusDir)\lcl\interfaces\win32;$(LazarusDir)\lcl\widgetset;$(LazarusDir)\components\rtticontrols;$(LazarusDir)\components\lazcontrols;$(LazarusDir)\components\pl_RX\source;$(LazarusDir)\components\rx;$(LazarusDir)\ideintf;$(LazarusDir)\lcl;$(LazarusDir)\lcl\forms;C:\codetyphon\lazarus\components\pl_lclextensions\source\include\;C:\codetyphon\lazarus\components\pl_VirtualTrees\source\include\"/>
-            <OtherUnitFiles Value="..;$(LazarusDir)\lcl\widgetset;$(LazarusDir)\lcl\interfaces\win32;$(LazarusDir)\components\rtticontrols;$(LazarusDir)\components\lazcontrols;$(LazarusDir)\components\pl_RX\source;C:\codetyphon\lazarus\components\pl_VirtualTrees\source\;$(LazarusDir)\components\rx;C:\codetyphon\lazarus\components\pl_VirtualTrees\;C:\codetyphon\lazarus\components\pl_VirtualTrees\source\units\;C:\codetyphon\lazarus\components\pl_lclextensions\source\;$(LazarusDir)\ideintf;$(LazarusDir)\lcl;$(LazarusDir)\lcl\forms;..\src;..\..\..\other\zengl\headers;..\..\..\other\components;..\..\..\common"/>
-            <UnitOutputDirectory Value="../crap/$(TargetCPU)-$(TargetOS)"/>
-          </SearchPaths>
-          <Parsing>
-            <SyntaxOptions>
-              <SyntaxMode Value="Delphi"/>
-            </SyntaxOptions>
-          </Parsing>
-          <CodeGeneration>
-            <SmartLinkUnit Value="True"/>
-            <RelocatableUnit Value="True"/>
-            <TargetCPU Value="x86_64"/>
-            <TargetOS Value="linux"/>
-            <Optimizations>
-              <OptimizationLevel Value="2"/>
-            </Optimizations>
-          </CodeGeneration>
-          <Linking>
-            <Debugging>
-              <GenerateDebugInfo Value="False"/>
-              <DebugInfoType Value="dsDwarf2"/>
-              <UseValgrind Value="True"/>
-              <StripSymbols Value="True"/>
-            </Debugging>
-            <LinkSmart Value="True"/>
-            <Options>
-              <Win32>
-                <GraphicApplication Value="True"/>
-              </Win32>
-            </Options>
-          </Linking>
-          <Other>
-            <Verbosity>
-              <ShowWarn Value="False"/>
-              <ShowNotes Value="False"/>
-              <ShowHints Value="False"/>
-            </Verbosity>
-            <WriteFPCLogo Value="False"/>
-            <CompilerMessages>
-              <UseMsgFile Value="True"/>
-            </CompilerMessages>
-            <CustomOptions Value="-dEDITOR -dHANDLER_FILE"/>
-            <CompilerPath Value="$(CompPath)"/>
-          </Other>
-          <LCLWidgetType Value="qt"/>
-        </CompilerOptions>
-      </Item3>
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
@@ -157,7 +87,7 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="11">
+    <Units Count="10">
       <Unit0>
         <Filename Value="AnimatioEditor.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -172,59 +102,54 @@
         <UnitName Value="u_main"/>
       </Unit1>
       <Unit2>
-        <Filename Value="..\src\u_animation.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="u_animation"/>
-      </Unit2>
-      <Unit3>
-        <Filename Value="..\..\..\other\zengl\headers\zglHeader.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="zglHeader"/>
-      </Unit3>
-      <Unit4>
         <Filename Value="..\src\u_render.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="u_render"/>
-      </Unit4>
-      <Unit5>
+      </Unit2>
+      <Unit3>
         <Filename Value="..\src\u_editorhistory.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="u_editorhistory"/>
-      </Unit5>
-      <Unit6>
+      </Unit3>
+      <Unit4>
         <Filename Value="..\src\u_prop_form.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="PropertiesForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="u_prop_form"/>
-      </Unit6>
-      <Unit7>
-        <Filename Value="..\..\..\common\u_db.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="u_db"/>
-      </Unit7>
-      <Unit8>
-        <Filename Value="..\..\..\common\u_zglhandler.pas"/>
-        <IsPartOfProject Value="True"/>
-        <UnitName Value="u_zglhandler"/>
-      </Unit8>
-      <Unit9>
+      </Unit4>
+      <Unit5>
         <Filename Value="..\src\u_proj_form.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="ProjectForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="u_proj_form"/>
-      </Unit9>
-      <Unit10>
+      </Unit5>
+      <Unit6>
         <Filename Value="..\src\u_preview_form.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="PreviewBlenderForm"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="u_preview_form"/>
-      </Unit10>
+      </Unit6>
+      <Unit7>
+        <Filename Value="..\units\u_db.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="u_db"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="..\units\zglHeader.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="zglHeader"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="..\units\u_animation.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="u_animation"/>
+      </Unit9>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -235,7 +160,7 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir);$(LazarusDir)\lcl\units\i386-win32;$(LazarusDir)\lcl\include;C:\codetyphon\fpcsrc\;$(LazarusDir)\lcl\interfaces\win32;$(LazarusDir)\lcl\widgetset;$(LazarusDir)\components\rtticontrols;$(LazarusDir)\components\lazcontrols;$(LazarusDir)\components\pl_RX\source;$(LazarusDir)\components\rx;$(LazarusDir)\ideintf;$(LazarusDir)\lcl;$(LazarusDir)\lcl\forms;C:\codetyphon\lazarus\components\pl_lclextensions\source\include\;C:\codetyphon\lazarus\components\pl_VirtualTrees\source\include\"/>
-      <OtherUnitFiles Value="..;$(LazarusDir)\lcl\widgetset;$(LazarusDir)\lcl\interfaces\win32;$(LazarusDir)\components\rtticontrols;$(LazarusDir)\components\lazcontrols;$(LazarusDir)\components\pl_RX\source;C:\codetyphon\lazarus\components\pl_VirtualTrees\source\;$(LazarusDir)\components\rx;C:\codetyphon\lazarus\components\pl_VirtualTrees\;C:\codetyphon\lazarus\components\pl_VirtualTrees\source\units\;C:\codetyphon\lazarus\components\pl_lclextensions\source\;$(LazarusDir)\ideintf;$(LazarusDir)\lcl;$(LazarusDir)\lcl\forms;..\src;..\..\..\other\zengl\headers;..\..\..\other\components;..\..\..\common"/>
+      <OtherUnitFiles Value="..;$(LazarusDir)\lcl\widgetset;$(LazarusDir)\lcl\interfaces\win32;$(LazarusDir)\components\rtticontrols;$(LazarusDir)\components\lazcontrols;$(LazarusDir)\components\pl_RX\source;C:\codetyphon\lazarus\components\pl_VirtualTrees\source\;$(LazarusDir)\components\rx;C:\codetyphon\lazarus\components\pl_VirtualTrees\;C:\codetyphon\lazarus\components\pl_VirtualTrees\source\units\;C:\codetyphon\lazarus\components\pl_lclextensions\source\;$(LazarusDir)\ideintf;$(LazarusDir)\lcl;$(LazarusDir)\lcl\forms;..\src;..\units"/>
       <UnitOutputDirectory Value="../crap/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
