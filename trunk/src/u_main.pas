@@ -1134,6 +1134,7 @@ begin
         end;
       end;
     end;
+    Editor.UpdateAnimationInstance;
   end;
   Editor.DragState.Drag := false;
 end;
