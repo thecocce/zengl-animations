@@ -1033,26 +1033,28 @@ begin
         fx_SetBlendMode(FX_BLEND_NORMAL);
         fx_SetColorMode(FX_COLOR_SET);
         ainst := AnimInstance.GetInstanceObjectByLO(sot.ObjectTo);
+        if Assigned(ainst) then begin
+          for i := 0 to CIRCUIT_COUNT - 1 do begin
+            offX := CircuitPoints[i].X * Min(CIRCUIT_SIZE / CAM.Zoom.X, 6);
+            offY := CircuitPoints[i].Y * Min(CIRCUIT_SIZE / CAM.Zoom.X, 6);
+            ainst.Transform := anTransformClass.ApplyTransform(
+              anTransformClass.Get(offX, offY), trnsfrm);
+            ainst.Update(0);
+            ainst.Draw(ainst.Transform,
+              AnimInstance.CurrentFrame + AnimInstance.OffsetTime,
+              FX_BLEND or FX_COLOR);
+          end;
 
-        for i := 0 to CIRCUIT_COUNT - 1 do begin
-          offX := CircuitPoints[i].X * Min(CIRCUIT_SIZE / CAM.Zoom.X, 6);
-          offY := CircuitPoints[i].Y * Min(CIRCUIT_SIZE / CAM.Zoom.X, 6);
-          ainst.Transform := anTransformClass.ApplyTransform(
-            anTransformClass.Get(offX, offY), trnsfrm);
+          fx2d_SetColor(0);
+          fx_SetBlendMode(FX_BLEND_NORMAL);
+          fx_SetColorMode(FX_COLOR_MIX);
+
+          ainst.Transform := trnsfrm;
           ainst.Update(0);
-          ainst.Draw(ainst.Transform,
-            AnimInstance.CurrentFrame + AnimInstance.OffsetTime,
-            FX_BLEND or FX_COLOR);
+          ainst.Draw(trnsfrm,
+            AnimInstance.CurrentFrame + AnimInstance.OffsetTime);
+
         end;
-
-        fx2d_SetColor(0);
-        fx_SetBlendMode(FX_BLEND_NORMAL);
-        fx_SetColorMode(FX_COLOR_MIX);
-
-        ainst.Transform := trnsfrm;
-        ainst.Update(0);
-        ainst.Draw(trnsfrm,
-          AnimInstance.CurrentFrame + AnimInstance.OffsetTime);
 
         AnimInstance.Update(0);
 
