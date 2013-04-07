@@ -41,24 +41,25 @@ const
   ANIM_VERSION                     = 0;
 
 type
-  anNamedObject                    = class;
-  anObjectWithData                 = class;
-  anAnimationSet                   = class;
-  anLibrary                        = class;
-  anSymbol                         = class;
-  anAnimation                      = class;
-  anAnimationPrototype             = class;
-  anAnimationBlender               = class;
-  anTexture                        = class;
-  anTextureParams                  = class;
-  anAtlasTextureZone               = class;
-  anAnimationLayerObject           = class;
-  anAnimationInstance              = class;
-  anAnimationInstanceTree          = class;
-  anAnimationLOInstanceHolder      = class;
-  anAnimationLayerObjectInstance   = class;
-  anAnimationKeyFrameInstance      = class;
-  anOtherKFProperty                = class;
+  anNamedObject                      = class;
+  anObjectWithData                   = class;
+  anAnimationSet                     = class;
+  anLibrary                          = class;
+  anSymbol                           = class;
+  anAnimation                        = class;
+  anAnimationPrototype               = class;
+  anAnimationBlender                 = class;
+  anTexture                          = class;
+  anTextureParams                    = class;
+  anAtlasTextureZone                 = class;
+  anAnimationLayerObject             = class;
+  anAnimationInstance                = class;
+  anAnimationInstanceTree            = class;
+  anAnimationLOInstanceHolder        = class;
+  anAnimationLayerObjectInstance     = class;
+  anAnimationKeyFrameInstance        = class;
+  anOtherKFProperty                  = class;
+  anAnimationLayerAnimationInstance  = class;
 
   anAnimationEvent                 = procedure (Sender: anObjectWithData) of object;
   anString                         = string;
@@ -236,7 +237,6 @@ type
       fWidth, fHeight: integer;
       function getData: zglPTexture;
 
-      procedure Update; virtual;
       function CreateParams(pSymbol: anSymbol): anTextureParams; virtual; abstract;
     published
       property FileContent: anTextureContent read fFileData write fFileData;
@@ -275,6 +275,7 @@ type
 
       function HaveTexture: Boolean; virtual;
       function GetTexture: Pointer; virtual;
+      function GetOtherProperties(AnimationTo: anAnimationPrototype): anOtherKFProperty; virtual;
       function FormatTexture(TexturePointer: Pointer): zglPTexture; virtual;
       procedure ReleaseTexture(TexturePointer: Pointer); virtual;
 
@@ -291,7 +292,6 @@ type
 
   anFullTexture = class ( anTexture)
     private
-      procedure Update; override;
       function CreateParams(pSymbol: anSymbol): anTextureParams; override;
   end;
 
@@ -314,7 +314,6 @@ type
       procedure setTileX(AValue: Integer);
       procedure setTileY(AValue: Integer);
       procedure updateTile;
-      procedure Update; override;
       function CreateParams(pSymbol: anSymbol): anTextureParams; override;
     published
       property TileX: Integer read fTileX write setTileX;
@@ -343,6 +342,8 @@ type
       procedure AssignTo(Dest: TPersistent); override;
       procedure SaveToRecord(rec: TDBRecord); override;
       procedure LoadFromRecord(rec: TDBRecord); override;
+
+      function GetOtherProperties(AnimationTo: anAnimationPrototype): anOtherKFProperty; override;
 
       procedure Draw(Transform: anTransform; pContent: zglPTexture;
          Params: anPInstanceParameters; FX: LongWord = FX_BLEND); override;
@@ -374,6 +375,8 @@ type
       procedure AssignTo(Dest: TPersistent); override;
       procedure SaveToRecord(rec: TDBRecord); override;
       procedure LoadFromRecord(rec: TDBRecord); override;
+
+      function GetOtherProperties(AnimationTo: anAnimationPrototype): anOtherKFProperty; override;
 
       procedure Draw(Transform: anTransform; pContent: zglPTexture;
          Params: anPInstanceParameters; FX: LongWord = FX_BLEND); override;
@@ -420,7 +423,6 @@ type
       fZones: anAtlasTextureZoneList;
       function CreateParams(pSymbol: anSymbol): anTextureParams; override;
       function getZonesCount: integer;
-      procedure Update; override;
     published
       property ZonesCount: integer read getZonesCount;
     public
@@ -534,58 +536,101 @@ type
   anOnActivateCallback = procedure (Obj: anAnimationLayerObjectInstance;
      Sender: anAnimationKeyFrameInstance;  Prop: anOtherKFProperty) of object;
 
+  { anAnimationActioner }
+
+  anAnimationAction = (apaNone, apaGotoAndStop, apaGotoAndPlay, apaStop, apaPlay);
+  anAnimationActioner = class ( TPersistent )
+    private
+      fAction: anAnimationAction;
+      fFrameTo: anString;
+    published
+      property FrameTo: anString read fFrameTo write fFrameTo;
+      property Action: anAnimationAction read fAction write fAction;
+    public
+      procedure SaveToRecord(rec: TDBRecord);
+      procedure LoadFromRecord(rec: TDBRecord);
+
+      procedure Activate(InstanceTo: anAnimationInstance);
+
+      constructor Create;
+  end;
+
   { anOtherKFProperty }
 
   anOtherKFProperty = class ( TPersistent )
     private
+      fThisAnimationAction: anAnimationActioner;
       fAnimation: anAnimation;
-      fCallback: anString;
+      fOnActivateCallback, fOnFrameCallback: anString;
     published
-      property Callback: anString read fCallback write fCallback;
+      property OnActivateCallback: anString read fOnActivateCallback write fOnActivateCallback;
+      property OnFrameCallback: anString read fOnFrameCallback write fOnFrameCallback;
+      property ThisAnimationAction: anAnimationActioner read fThisAnimationAction write fThisAnimationAction;
     public
       property Animation: anAnimation read fAnimation write fAnimation;
 
       procedure OnActivate(Obj: anAnimationLayerObjectInstance; KeyFrom: anAnimationKeyFrameInstance); virtual;
+      procedure OnFrame(Obj: anAnimationLayerObjectInstance; KeyFrom: anAnimationKeyFrameInstance; Frame: anPosition); virtual;
 
       procedure SaveToRecord(rec: TDBRecord); virtual;
       procedure LoadFromRecord(rec: TDBRecord); virtual;
 
-      constructor Create(pAnimation: anAnimation);
+      constructor Create(pAnimation: anAnimation); virtual;
+      destructor Destroy; override;
   end;
 
-  anOtherAnimationPropertyAction = (apaNone, apaGotoAndStop, apaGotoAndPlay, apaStop, apaPlay);
-  anOtherSpritePropertyAction = (spaNone, spaSetFrame);
+  anOtherStaticSpritePropertyAction = (spaNone, spaSetFrame);
 
   { anOtherAnimationProperty }
 
   anOtherAnimationProperty = class (anOtherKFProperty)
     private
-      fAction: anOtherAnimationPropertyAction;
-      fFrameTo: anString;
+      fChildAnimationAction: anAnimationActioner;
     published
-      property FrameTo: anString read fFrameTo write fFrameTo;
-      property Action: anOtherAnimationPropertyAction read fAction write fAction;
+      property ChildAnimationAction: anAnimationActioner read fChildAnimationAction write fChildAnimationAction;
     public
       procedure OnActivate(Obj: anAnimationLayerObjectInstance; KeyFrom: anAnimationKeyFrameInstance); override;
 
       procedure SaveToRecord(rec: TDBRecord); override;
       procedure LoadFromRecord(rec: TDBRecord); override;
+
+      constructor Create(pAnimation: anAnimation); override;
+      destructor Destroy; override;
   end;
 
-  { anOtherSpriteProperty }
+  { anOtherStaticSpriteProperty }
 
-  anOtherSpriteProperty = class (anOtherKFProperty)
+  anOtherStaticSpriteProperty = class (anOtherKFProperty)
     private
-      fAction: anOtherSpritePropertyAction;
+      fAction: anOtherStaticSpritePropertyAction;
       fFrameTo: anPosition;
     published
       property FrameTo: anPosition read fFrameTo write fFrameTo;
-      property Action: anOtherSpritePropertyAction read fAction write fAction;
+      property Action: anOtherStaticSpritePropertyAction read fAction write fAction;
     public
       procedure OnActivate(Obj: anAnimationLayerObjectInstance; KeyFrom: anAnimationKeyFrameInstance); override;
+      procedure OnFrame(Obj: anAnimationLayerObjectInstance; KeyFrom: anAnimationKeyFrameInstance; Frame: anPosition); override;
 
       procedure SaveToRecord(rec: TDBRecord); override;
       procedure LoadFromRecord(rec: TDBRecord); override;
+
+      constructor Create(pAnimation: anAnimation); override;
+  end;
+
+  { anOtherAnimationSpriteProperty }
+
+  anOtherAnimationSpriteProperty = class (anOtherKFProperty)
+    private
+      //
+    published
+      //
+    public
+      procedure OnFrame(Obj: anAnimationLayerObjectInstance; KeyFrom: anAnimationKeyFrameInstance; Frame: anPosition); override;
+
+      procedure SaveToRecord(rec: TDBRecord); override;
+      procedure LoadFromRecord(rec: TDBRecord); override;
+
+      constructor Create(pAnimation: anAnimation); override;
   end;
 
   { anAnimationKeyFrameInstance }
@@ -602,7 +647,7 @@ type
       fRounds: Integer;
       fTransformation: anTransformClass;
       fPrev, fNext: anAnimationKeyFrameInstance;
-      fOnActivate: anOtherKFProperty;
+      fActiveProperties: anOtherKFProperty;
 
       Transform: anTransform;
       function getFrames: anPosition;
@@ -619,7 +664,7 @@ type
       property InterpolationMode: anInterpolationMode read fInterpolationMode write fInterpolationMode;
       property Frames: anPosition read getFrames write fFrames;
       property Rounds: Integer read fRounds write fRounds;
-      property OnActivate: anOtherKFProperty read fOnActivate write fOnActivate;
+      property ActiveProperties: anOtherKFProperty read fActiveProperties write fActiveProperties;
 
       function GetNextFrames: anPosition;
       function GetNextInstance: anAnimationKeyFrameInstance;
@@ -647,6 +692,7 @@ type
 
   anAnimationLayerObjectInstance = class ( anObjectWithData )
     private
+      fAnimationInstance: anAnimationInstance;
       fObjectTo: anAnimationLayerObject;
       fHolder: anAnimationLOInstanceHolder;
       fTimeLine: anAnimationTimeLine;
@@ -654,6 +700,7 @@ type
       function getTransform: anTransform; virtual;
       procedure setTransform(AValue: anTransform); virtual;
     public
+      property AnimationInstance: anAnimationInstance read fAnimationInstance write fAnimationInstance;
       property TimeLine: anAnimationTimeLine read fTimeLine write fTimeLine;
       property Holder: anAnimationLOInstanceHolder read fHolder write fHolder;
       property ObjectTo: anAnimationLayerObject read fObjectTo write fObjectTo;
@@ -665,7 +712,7 @@ type
       procedure Update(dt: Double); virtual; abstract;
       procedure Draw(pTransform: anTransform; Time: Single; FX: LongWord = FX_BLEND); virtual; abstract;
 
-      constructor Create(pObjectTo: anAnimationLayerObject;
+      constructor Create(pIntanceTo: anAnimationInstance; pObjectTo: anAnimationLayerObject;
         pHolder: anAnimationLOInstanceHolder);
   end;
 
@@ -762,7 +809,7 @@ type
       procedure Update(dt: Double); override;
       procedure Draw(pTransform: anTransform; Time: Single; FX: LongWord = FX_BLEND); override;
 
-      constructor Create(pObjectTo: anAnimationLayerObject; pHolder: anAnimationLOInstanceHolder);
+      constructor Create(pIntanceTo: anAnimationInstance; pObjectTo: anAnimationLayerObject; pHolder: anAnimationLOInstanceHolder);
       destructor Destroy; override;
   end;
 
@@ -782,7 +829,7 @@ type
       procedure Update(dt: Double); override;
       procedure Draw(pTransform: anTransform; Time: Single; FX: LongWord = FX_BLEND); override;
 
-      constructor Create(pInstanceFrom: anAnimation; pObjectTo: anAnimationLayerObject;
+      constructor Create(pIntanceTo: anAnimationInstance; pInstanceFrom: anAnimation; pObjectTo: anAnimationLayerObject;
         pHolder: anAnimationLOInstanceHolder);
       destructor Destroy; override;
   end;
@@ -811,7 +858,7 @@ type
       procedure Draw(pTransform: anTransform; Time: Single; FX: LongWord = FX_BLEND); override;
 
       property LookUp: anAnimationLayerObjectInstance read fLookUp write fLookUp;
-      constructor Create(pLookUp: anAnimationLayerObjectInstance;
+      constructor Create(pIntanceTo: anAnimationInstance; pLookUp: anAnimationLayerObjectInstance;
         pObjectTo: anAnimationLayerObject; pHolder: anAnimationLOInstanceHolder);
   end;
 
@@ -1262,9 +1309,65 @@ type
 
 implementation
 
-{ anOtherSpriteProperty }
+{ anAnimationActioner }
 
-procedure anOtherSpriteProperty.OnActivate(Obj: anAnimationLayerObjectInstance;
+procedure anAnimationActioner.SaveToRecord(rec: TDBRecord);
+begin
+  if Action in [apaGotoAndPlay, apaGotoAndStop] then
+    rec.ChildByName['f'].AsString := FrameTo;
+  rec.ChildByName['a'].AsByte := Byte(Action);
+end;
+
+procedure anAnimationActioner.LoadFromRecord(rec: TDBRecord);
+begin
+  Action := anAnimationAction(rec.ChildByName['a'].AsByte);
+  if Action in [apaGotoAndPlay, apaGotoAndStop] then
+    FrameTo := rec.ChildByName['f'].AsString;
+end;
+
+procedure anAnimationActioner.Activate(InstanceTo: anAnimationInstance);
+begin
+  case Action of
+    apaPlay: InstanceTo.Play;
+    apaStop: InstanceTo.Stop(true);
+    apaGotoAndStop: InstanceTo.GotoAndStop(FrameTo, true);
+    apaGotoAndPlay: InstanceTo.GotoAndPlay(FrameTo);
+  end;
+end;
+
+constructor anAnimationActioner.Create;
+begin
+  Action := apaNone;
+  FrameTo := '';
+end;
+
+{ anOtherAnimationSpriteProperty }
+
+procedure anOtherAnimationSpriteProperty.OnFrame(
+  Obj: anAnimationLayerObjectInstance; KeyFrom: anAnimationKeyFrameInstance;
+  Frame: anPosition);
+begin
+  inherited OnFrame(Obj, KeyFrom, Frame);
+end;
+
+procedure anOtherAnimationSpriteProperty.SaveToRecord(rec: TDBRecord);
+begin
+  inherited SaveToRecord(rec);
+end;
+
+procedure anOtherAnimationSpriteProperty.LoadFromRecord(rec: TDBRecord);
+begin
+  inherited LoadFromRecord(rec);
+end;
+
+constructor anOtherAnimationSpriteProperty.Create(pAnimation: anAnimation);
+begin
+  inherited Create(pAnimation);
+end;
+
+{ anOtherStaticSpriteProperty }
+
+procedure anOtherStaticSpriteProperty.OnActivate(Obj: anAnimationLayerObjectInstance;
   KeyFrom: anAnimationKeyFrameInstance);
 var
   inst: anAnimationLayerSymbolInstance;
@@ -1278,7 +1381,15 @@ begin
   end;
 end;
 
-procedure anOtherSpriteProperty.SaveToRecord(rec: TDBRecord);
+procedure anOtherStaticSpriteProperty.OnFrame(Obj: anAnimationLayerObjectInstance;
+  KeyFrom: anAnimationKeyFrameInstance; Frame: anPosition);
+begin
+  inherited OnFrame(Obj, KeyFrom, Frame);
+
+
+end;
+
+procedure anOtherStaticSpriteProperty.SaveToRecord(rec: TDBRecord);
 begin
   inherited;
   if Action in [spaSetFrame] then
@@ -1286,12 +1397,17 @@ begin
   rec.ChildByName['a'].AsByte := Byte(Action);
 end;
 
-procedure anOtherSpriteProperty.LoadFromRecord(rec: TDBRecord);
+procedure anOtherStaticSpriteProperty.LoadFromRecord(rec: TDBRecord);
 begin
   inherited;
-  Action := anOtherSpritePropertyAction(rec.ChildByName['a'].AsByte);
+  Action := anOtherStaticSpritePropertyAction(rec.ChildByName['a'].AsByte);
   if Action in [spaSetFrame] then
     FrameTo := rec.ChildByName['f'].AsInteger;
+end;
+
+constructor anOtherStaticSpriteProperty.Create(pAnimation: anAnimation);
+begin
+  inherited Create(pAnimation);
 end;
 
 { anOtherKFProperty }
@@ -1301,8 +1417,21 @@ procedure anOtherKFProperty.OnActivate(Obj: anAnimationLayerObjectInstance;
 var
   idx: LongInt;
 begin
-  if Callback = '' then exit;
-  idx := Animation.Callbacks.IndexOf(Callback);
+  ThisAnimationAction.Activate(Obj.AnimationInstance);
+  if OnActivateCallback = '' then exit;
+  idx := Animation.Callbacks.IndexOf(OnActivateCallback);
+  if idx >= 0 then begin
+    Animation.Callbacks.Data[idx](Obj, KeyFrom, Self);;
+  end;
+end;
+
+procedure anOtherKFProperty.OnFrame(Obj: anAnimationLayerObjectInstance;
+  KeyFrom: anAnimationKeyFrameInstance; Frame: anPosition);
+var
+  idx: LongInt;
+begin
+  if OnFrameCallback = '' then exit;
+  idx := Animation.Callbacks.IndexOf(OnFrameCallback);
   if idx >= 0 then begin
     Animation.Callbacks.Data[idx](Obj, KeyFrom, Self);;
   end;
@@ -1310,18 +1439,30 @@ end;
 
 procedure anOtherKFProperty.SaveToRecord(rec: TDBRecord);
 begin
-  rec.ChildByName['c'].AsString := Callback;
+  rec.ChildByName['c'].AsString := OnActivateCallback;
+  rec.ChildByName['f'].AsString := OnFrameCallback;
+  ThisAnimationAction.SaveToRecord(rec.ChildByName['this_anim']);
 end;
 
 procedure anOtherKFProperty.LoadFromRecord(rec: TDBRecord);
 begin
-  Callback := rec.ChildByName['c'].AsString;
+  OnActivateCallback := rec.ChildByName['c'].AsString;
+  OnFrameCallback := rec.ChildByName['f'].AsString;
+  ThisAnimationAction.LoadFromRecord(rec.ChildByName['this_anim']);
 end;
 
 constructor anOtherKFProperty.Create(pAnimation: anAnimation);
 begin
   Animation := pAnimation;
-  Callback := '';
+  OnActivateCallback := '';
+  OnFrameCallback := '';
+  ThisAnimationAction := anAnimationActioner.Create;
+end;
+
+destructor anOtherKFProperty.Destroy;
+begin
+  ThisAnimationAction.Destroy;
+  inherited Destroy;
 end;
 
 { anOtherAnimationProperty }
@@ -1332,31 +1473,32 @@ var
   Anim: anAnimationLayerAnimationInstance;
 begin
   inherited OnActivate(Obj, KeyFrom);
-
   Anim := anAnimationLayerAnimationInstance(Obj);
-
-  case Action of
-    apaPlay: Anim.Play;
-    apaStop: Anim.Stop(true);
-    apaGotoAndStop: Anim.Instance.GotoAndStop(FrameTo, true);
-    apaGotoAndPlay: Anim.Instance.GotoAndPlay(FrameTo);
-  end;
+  ChildAnimationAction.Activate(Anim.Instance);
 end;
 
 procedure anOtherAnimationProperty.SaveToRecord(rec: TDBRecord);
 begin
   inherited;
-  if Action in [apaGotoAndPlay, apaGotoAndStop] then
-    rec.ChildByName['f'].AsString := FrameTo;
-  rec.ChildByName['a'].AsByte := Byte(Action);
+  ChildAnimationAction.SaveToRecord(rec.ChildByName['child_anim']);
 end;
 
 procedure anOtherAnimationProperty.LoadFromRecord(rec: TDBRecord);
 begin
   inherited;
-  Action := anOtherAnimationPropertyAction(rec.ChildByName['a'].AsByte);
-  if Action in [apaGotoAndPlay, apaGotoAndStop] then
-    FrameTo := rec.ChildByName['f'].AsString;
+  ChildAnimationAction.LoadFromRecord(rec.ChildByName['child_anim']);
+end;
+
+constructor anOtherAnimationProperty.Create(pAnimation: anAnimation);
+begin
+  ChildAnimationAction := anAnimationActioner.Create;
+  inherited Create(pAnimation);
+end;
+
+destructor anOtherAnimationProperty.Destroy;
+begin
+  ChildAnimationAction.Free;
+  inherited Destroy;
 end;
 
 { anBlenderObjectProxy }
@@ -1408,9 +1550,10 @@ var
 begin
   inst := InstanceAt[Frame];
   if inst.Position = Frame then begin
-    if Assigned(inst.OnActivate) then
-      inst.OnActivate.OnActivate(Instance, Inst);
+    if Assigned(inst.ActiveProperties) then
+      inst.ActiveProperties.OnActivate(Instance, Inst);
   end;
+  inst.ActiveProperties.OnFrame(Instance, Inst, Frame - Inst.Position);
 end;
 
 function anAnimationLOInstanceHolder.getObjectInstanceAt(Time: Single
@@ -1705,11 +1848,11 @@ begin
 end;
 
 constructor anAnimationLayerLookUpPointInstance.Create(
-  pLookUp: anAnimationLayerObjectInstance; pObjectTo: anAnimationLayerObject;
-  pHolder: anAnimationLOInstanceHolder);
+  pIntanceTo: anAnimationInstance; pLookUp: anAnimationLayerObjectInstance;
+  pObjectTo: anAnimationLayerObject; pHolder: anAnimationLOInstanceHolder);
 begin
   LookUp := pLookUp;
-  inherited Create(pObjectTo, pHolder);
+  inherited Create(pIntanceTo, pObjectTo, pHolder);
 end;
 
 { anAnimationLookUpPointObject }
@@ -1723,7 +1866,7 @@ begin
     OthInstance := AnimInstance.Instances[LookUp.Index];
   end else
     OthInstance := nil;
-  Result := anAnimationLayerLookUpPointInstance.Create(OthInstance, Self, HolderTo);
+  Result := anAnimationLayerLookUpPointInstance.Create(AnimInstance, OthInstance, Self, HolderTo);
 end;
 
 procedure anAnimationLookUpPointObject.AssignTo(Dest: TPersistent);
@@ -1802,7 +1945,7 @@ function anAnimationPointObject.GetObjectInstance(
   AnimInstance: anAnimationInstance; HolderTo: anAnimationLOInstanceHolder
   ): anAnimationLayerObjectInstance;
 begin
-  Result := anAnimationLayerPointInstance.Create(Self, HolderTo);
+  Result := anAnimationLayerPointInstance.Create(AnimInstance, Self, HolderTo);
 end;
 
 constructor anAnimationPointObject.Create(pAnimation: anAnimationPrototype;
@@ -1850,11 +1993,11 @@ begin
 end;
 
 constructor anAnimationLayerAnimationInstance.Create(
-  pInstanceFrom: anAnimation; pObjectTo: anAnimationLayerObject;
-  pHolder: anAnimationLOInstanceHolder);
+  pIntanceTo: anAnimationInstance; pInstanceFrom: anAnimation;
+  pObjectTo: anAnimationLayerObject; pHolder: anAnimationLOInstanceHolder);
 begin
   Instance := pInstanceFrom.GetInstance;
-  inherited Create(pObjectTo, pHolder);
+  inherited Create(pIntanceTo, pObjectTo, pHolder);
 end;
 
 destructor anAnimationLayerAnimationInstance.Destroy;
@@ -1895,7 +2038,7 @@ function anAnimationAnimationObject.GetObjectInstance(
   AnimInstance: anAnimationInstance; HolderTo: anAnimationLOInstanceHolder
   ): anAnimationLayerObjectInstance;
 begin
-  result := anAnimationLayerAnimationInstance.Create(DataAnimation, Self, HolderTo);
+  result := anAnimationLayerAnimationInstance.Create(AnimInstance, DataAnimation, Self, HolderTo);
 end;
 
 constructor anAnimationAnimationObject.Create(pDataAnimation: anAnimation;
@@ -1918,8 +2061,10 @@ begin
 end;
 
 constructor anAnimationLayerObjectInstance.Create(
-  pObjectTo: anAnimationLayerObject; pHolder: anAnimationLOInstanceHolder);
+  pIntanceTo: anAnimationInstance; pObjectTo: anAnimationLayerObject;
+  pHolder: anAnimationLOInstanceHolder);
 begin
+  AnimationInstance := pIntanceTo;
   Transform := anTransformClass.NewTransform;
   ObjectTo := pObjectTo;
   Holder := pHolder;
@@ -1963,10 +2108,11 @@ begin
 end;
 
 constructor anAnimationLayerSymbolInstance.Create(
-  pObjectTo: anAnimationLayerObject; pHolder: anAnimationLOInstanceHolder);
+  pIntanceTo: anAnimationInstance; pObjectTo: anAnimationLayerObject;
+  pHolder: anAnimationLOInstanceHolder);
 begin
   SwapContent := nil;
-  inherited Create(pObjectTo, pHolder);
+  inherited Create(pIntanceTo, pObjectTo, pHolder);
   TextureData := anAnimationSymbolObject(ObjectTo).Symbol.TextureParams.GetTexture;
   Stop(false);
 end;
@@ -2002,15 +2148,14 @@ function anAnimationSymbolObject.GetObjectInstance(
   AnimInstance: anAnimationInstance; HolderTo: anAnimationLOInstanceHolder
   ): anAnimationLayerObjectInstance;
 begin
-  Result := anAnimationLayerSymbolInstance.Create(Self, HolderTo);
+  Result := anAnimationLayerSymbolInstance.Create(AnimInstance, Self, HolderTo);
 end;
 
 function anAnimationSymbolObject.GetOtherProperties: anOtherKFProperty;
 begin
-  if (Symbol.TextureParams is anStaticSpriteTextureParams) or
-     (Symbol.TextureParams is anAnimatedSpriteTextureParams) then
-    Result := anOtherSpriteProperty.Create(Animation);
-  Result := inherited GetOtherProperties;
+  Result := Symbol.TextureParams.GetOtherProperties(Animation);
+  if not Assigned(Result) then
+    Result := inherited GetOtherProperties;
 end;
 
 constructor anAnimationSymbolObject.Create(pSymbol: anSymbol;
@@ -2391,8 +2536,8 @@ begin
   rec.ChildByName['r'].AsInteger := Rounds;
   rec.ChildByName['n'].AsString := Name;
   Transformation.SaveToRecord(rec.ChildByName['t']);
-  if Assigned(OnActivate) then begin
-    OnActivate.SaveToRecord(rec.ChildByName['o']);
+  if Assigned(ActiveProperties) then begin
+    ActiveProperties.SaveToRecord(rec.ChildByName['o']);
   end;
 end;
 
@@ -2404,8 +2549,8 @@ begin
   Rounds := rec.ChildByName['r'].AsInteger;
   Name := rec.ChildByName['n'].AsString;
   Transformation.LoadFromRecord(rec.ChildByName['t']);
-  if Assigned(OnActivate) then begin
-    OnActivate.LoadFromRecord(rec.ChildByName['o']);
+  if Assigned(ActiveProperties) then begin
+    ActiveProperties.LoadFromRecord(rec.ChildByName['o']);
   end;
 end;
 
@@ -2427,7 +2572,7 @@ begin
   Rounds := 0;
   Name := '';
   Animation := pAnimation;
-  OnActivate := ObjectTo.GetOtherProperties;
+  ActiveProperties := ObjectTo.GetOtherProperties;
   Init(pHolder, pPrev, pNext, pTimeAt);
 end;
 
@@ -2442,7 +2587,7 @@ begin
   Rounds := 0;
   Name := '';
   Animation := pAnimation;
-  OnActivate := ObjectTo.GetOtherProperties;
+  ActiveProperties := ObjectTo.GetOtherProperties;
   Init(pHolder, pPrev, pNext, 0);
 end;
 
@@ -2460,8 +2605,8 @@ begin
     Holder.LastInstance := Prev;
   end;
   Transformation.Free;
-  if Assigned(OnActivate) then
-    OnActivate.Free;
+  if Assigned(ActiveProperties) then
+    ActiveProperties.Free;
   inherited Destroy;
 end;
 
@@ -3407,6 +3552,12 @@ begin
     Result := nil;
 end;
 
+function anTextureParams.GetOtherProperties(AnimationTo: anAnimationPrototype
+  ): anOtherKFProperty;
+begin
+  Result := nil;
+end;
+
 function anTextureParams.FormatTexture(TexturePointer: Pointer): zglPTexture;
 begin
   Result := zglPTexture(TexturePointer);
@@ -3721,6 +3872,12 @@ begin
   Tile := rec.ChildByName['tile'].AsInteger;
 end;
 
+function anStaticSpriteTextureParams.GetOtherProperties(
+  AnimationTo: anAnimationPrototype): anOtherKFProperty;
+begin
+  Result := anOtherStaticSpriteProperty.Create(AnimationTo);
+end;
+
 procedure anStaticSpriteTextureParams.Draw(Transform: anTransform;
   pContent: zglPTexture; Params: anPInstanceParameters; FX: LongWord);
 var scX, scY: Single;
@@ -3761,16 +3918,6 @@ procedure anStaticSpriteTexture.updateTile;
 begin
   if (TileX > 0) and (TileY > 0) then
     tex_SetFrameSize(FileContent._Texture^, TileX, TileY);
-end;
-
-procedure anStaticSpriteTexture.Update;
-begin
-  inherited Update;
-  TileX := Data^.Width;
-  TileY := Data^.Height;
-  Width := TileX;
-  Height := TileY;
-  FramesCount := getFramesCount - 1;
 end;
 
 procedure anStaticSpriteTexture.setTileX(AValue: Integer);
@@ -4014,17 +4161,6 @@ end;
 
 { anFullTexture }
 
-procedure anFullTexture.Update;
-begin
-  inherited Update;
-  if Assigned(Data) then begin
-    if Width = 0 then
-      Width := Data^.Width;
-    if Height = 0 then
-      Height := Data^.Height;
-  end;
-end;
-
 function anFullTexture.CreateParams(pSymbol: anSymbol): anTextureParams;
 begin
   Result := anFullTextureParams.Create(Self, pSymbol);
@@ -4050,6 +4186,12 @@ procedure anAnimatedSpriteTextureParams.LoadFromRecord(rec: TDBRecord);
 begin
   TileFrom := rec.ChildByName['tile_from'].AsInteger;
   TileTo := rec.ChildByName['tile_to'].AsInteger;
+end;
+
+function anAnimatedSpriteTextureParams.GetOtherProperties(
+  AnimationTo: anAnimationPrototype): anOtherKFProperty;
+begin
+  Result := anOtherAnimationSpriteProperty.Create(AnimationTo);
 end;
 
 procedure anAnimatedSpriteTextureParams.Draw(Transform: anTransform;
@@ -4116,17 +4258,6 @@ begin
     Result := Zones.Count
   else
     Result := 0;
-end;
-
-procedure anAtlasTexture.Update;
-begin
-  inherited Update;
-  if Assigned(Data) then begin
-    if Width = 0 then
-      Width := Data^.Width;
-    if Height = 0 then
-      Height := Data^.Height;
-  end;
 end;
 
 procedure anAtlasTexture.SaveToRecord(rec: TDBRecord);
@@ -4259,11 +4390,6 @@ begin
   dst.FileContent := FileContent;
   dst.Width := Width;
   dst.Height := Height;
-end;
-
-procedure anTexture.Update;
-begin
-  // nothing to do
 end;
 
 procedure anTexture.SaveToRecord(rec: TDBRecord);
@@ -4764,7 +4890,6 @@ begin
        for i := 0 to drec.ChildCount - 1 do begin
          tex := AddTexture(drec.Child[i].Name, anTextureClass(FindClass(drec.Child[i].AsString)));
          tex.LoadFromRecord(drec.Child[i]);
-         tex.Update;
        end;
        AnimationLibrary.LoadFromRecord(Rec.ChildByName['library']);
        drec := Rec.ChildByName['animations'];
