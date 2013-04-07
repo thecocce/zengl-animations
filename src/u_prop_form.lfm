@@ -22,6 +22,8 @@ object PropertiesForm: TPropertiesForm
     NameFont.Color = clWindowText
     NameFont.Style = [fsBold]
     OnClick = ObjectPropertiesClick
+    PreferredSplitterX = 200
+    SplitterX = 200
     ValueFont.Color = clMaroon
   end
   object ButtonsPanel: TButtonPanel
