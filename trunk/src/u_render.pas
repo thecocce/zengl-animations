@@ -583,19 +583,19 @@ begin
   ChDir(file_GetDirectory(file_GetDirectory(ProjectFileName) + '/' + AnimationFileName));
   for i := 0 to Animation.Contents.Count - 1 do begin
     cnt := Animation.Contents.Data[i];
-    MainForm.RegisterContent(cnt);
+    MainForm.RegisterContent(cnt, false);
   end;
   for i := 0 to Animation.Textures.Count - 1 do begin
     tex := Animation.Textures.Data[i];
-    MainForm.RegisterTexture(tex, MainForm.GetTextureImgId(tex));
+    MainForm.RegisterTexture(tex, MainForm.GetTextureImgId(tex), false);
   end;
   for i := 0 to Animation.AnimationLibrary.Symbols.Count - 1 do begin
     sym := Animation.AnimationLibrary.Symbols.Data[i];
-    MainForm.RegisterSymbol(sym);
+    MainForm.RegisterSymbol(sym, false);
   end;
   for i := 0 to Animation.Animations.Count - 1 do begin
     anim := Animation.Animations.Data[i];
-    MainForm.RegisterAnimation(anim, anim.Prototype);
+    MainForm.RegisterAnimation(anim, anim.Prototype, false);
   end;
 end;
 
@@ -980,7 +980,7 @@ begin
         if not Assigned(DragState.Content) then begin
           DragState.Content := sym.TextureParams.GetTexture;
         end;
-        sym.Draw(trnsfrm, sym.TextureParams.FormatTexture(DragState.Content),  nil);
+        sym.Draw(trnsfrm, sym.TextureParams.FormatTexture(DragState.Content));
       end;
     end;
     if DragState.DropClass = anDropAnimation then begin
@@ -1191,7 +1191,7 @@ begin
       if not Assigned(DrawContentPointer) and (sym.TextureParams.HaveTexture) then begin
         DrawContentPointer := sym.TextureParams.GetTexture;
       end;
-      sym.Draw(trnsfrm, sym.TextureParams.FormatTexture(DrawContentPointer), nil);
+      sym.Draw(trnsfrm, sym.TextureParams.FormatTexture(DrawContentPointer));
 
       pr2d_line(
         sym.PivotX - ScX - 0.5,

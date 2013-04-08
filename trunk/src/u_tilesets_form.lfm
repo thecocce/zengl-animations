@@ -1,0 +1,173 @@
+object TileSetsForm: TTileSetsForm
+  Left = 332
+  Height = 465
+  Top = 140
+  Width = 422
+  BorderStyle = bsSingle
+  Caption = 'Edit tile sets'
+  ClientHeight = 465
+  ClientWidth = 422
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Position = poMainFormCenter
+  ShowHint = True
+  LCLVersion = '1.1'
+  object TileSetsList: TListView
+    Left = 9
+    Height = 138
+    Top = 8
+    Width = 404
+    Columns = <    
+      item
+        Caption = 'Tile sets'
+        Width = 400
+      end>
+    ColumnClick = False
+    ReadOnly = True
+    RowSelect = True
+    ShowColumnHeaders = False
+    SmallImages = MainForm.GuiImages
+    TabOrder = 0
+    ViewStyle = vsReport
+    OnChange = TileSetsListChange
+  end
+  object ToolBar1: TToolBar
+    Left = 336
+    Height = 25
+    Top = 152
+    Width = 74
+    Align = alNone
+    Caption = 'ToolBar1'
+    EdgeBorders = []
+    Images = MainForm.GuiImages
+    TabOrder = 1
+    object btnAddSet: TToolButton
+      Left = 1
+      Hint = 'Add new set'
+      Top = 0
+      Caption = 'btnAddSet'
+      ImageIndex = 0
+      OnClick = btnAddSetClick
+    end
+    object btnDeleteSet: TToolButton
+      Left = 47
+      Hint = 'Delete set'
+      Top = 0
+      Caption = 'btnDeleteSet'
+      Enabled = False
+      ImageIndex = 2
+      OnClick = btnDeleteSetClick
+    end
+    object btnRenameTileSet: TToolButton
+      Left = 24
+      Hint = 'Rename tile set'
+      Top = 0
+      Caption = 'btnRenameTileSet'
+      Enabled = False
+      ImageIndex = 36
+      OnClick = btnRenameTileSetClick
+    end
+  end
+  object TileSetLabel: TLabel
+    Left = 16
+    Height = 16
+    Top = 169
+    Width = 320
+    AutoSize = False
+    Caption = 'Tile set name'
+    Font.Height = -11
+    Font.Name = 'Tahoma'
+    Font.Style = [fsBold]
+    ParentColor = False
+    ParentFont = False
+  end
+  object TileSetPanel: TPanel
+    Left = 9
+    Height = 240
+    Top = 184
+    Width = 404
+    BevelOuter = bvNone
+    BorderStyle = bsSingle
+    ClientHeight = 236
+    ClientWidth = 400
+    TabOrder = 2
+    object TilesList: TListView
+      Left = 5
+      Height = 201
+      Top = 6
+      Width = 390
+      Columns = <      
+        item
+          Caption = 'Tile number'
+          Width = 180
+        end      
+        item
+          Caption = 'Time (ms)'
+          Width = 200
+        end>
+      ColumnClick = False
+      LargeImages = MainForm.GuiImages
+      ReadOnly = True
+      RowSelect = True
+      SmallImages = MainForm.GuiImages
+      TabOrder = 0
+      ViewStyle = vsReport
+      OnChange = TilesListChange
+    end
+    object ToolBar2: TToolBar
+      Left = 341
+      Height = 23
+      Top = 210
+      Width = 54
+      Align = alNone
+      Caption = 'ToolBar2'
+      EdgeBorders = []
+      EdgeInner = esNone
+      EdgeOuter = esNone
+      Images = MainForm.GuiImages
+      TabOrder = 1
+      object btnAddTile: TToolButton
+        Left = 1
+        Top = 0
+        Caption = 'btnAddTile'
+        ImageIndex = 0
+        OnClick = btnAddTileClick
+      end
+      object btnDeleteTile: TToolButton
+        Left = 24
+        Top = 0
+        Caption = 'btnDeleteTile'
+        Enabled = False
+        ImageIndex = 2
+        OnClick = btnDeleteTileClick
+      end
+    end
+    object edtTile: TEdit
+      Left = 5
+      Height = 21
+      Top = 212
+      Width = 160
+      OnChange = edtTileChange
+      TabOrder = 2
+      Text = 'edtTile'
+    end
+    object edtFrame: TEdit
+      Left = 173
+      Height = 21
+      Top = 212
+      Width = 155
+      OnChange = edtFrameChange
+      TabOrder = 3
+      Text = 'edtFrame'
+    end
+  end
+  object btnSave: TButton
+    Left = 315
+    Height = 26
+    Top = 430
+    Width = 98
+    Caption = 'Save'
+    ModalResult = 1
+    TabOrder = 3
+  end
+end

@@ -46,6 +46,8 @@ const
   IMG_MODE_TAGS         = 9;
   IMG_TREE_EXPANDED     = 10;
   IMG_TREE_NOT_EXPANDED = 11;
+  IMG_CALLBACK_FLAG     = 12;
+  IMG_ACTION_FLAG       = 13;
 
 
   IMG_SMALL_SIZE = 12;
@@ -59,6 +61,7 @@ type
   { TMainForm }
 
   TMainForm = class(TForm)
+    KFPEditFrame: TMenuItem;
     PreviewButtons: TToolBar;
     {%region vars}
     AnimationPopup: TPopupMenu;
@@ -290,6 +293,7 @@ type
     procedure KFPAddFramesClick(Sender: TObject);
     procedure KFPDeleteKeyFramesClick(Sender: TObject);
     procedure KFPRemoveFramesClick(Sender: TObject);
+    procedure KFPEditFrameClick(Sender: TObject);
     procedure ModeFlipXClick(Sender: TObject);
     procedure ModeFlipYClick(Sender: TObject);
     procedure MoveDownInstanceClick(Sender: TObject);
@@ -428,20 +432,20 @@ type
     procedure SetPanel(Mode: TPanelMode);
 
     function SelectedTexture: anTexture;
-    procedure RegisterTexture(tex: anTexture; ImgIndex: integer);
+    procedure RegisterTexture(tex: anTexture; ImgIndex: integer; Display: boolean);
     procedure UnRegisterTexture(tex: anTexture);
 
-    function RegisterAnimation(anim, proto: anAnimation): TTreeNode;
+    function RegisterAnimation(anim, proto: anAnimation; Display: boolean): TTreeNode;
     procedure UnRegisterAnimation(anim: anAnimation);
     procedure UpdateAnimation;
 
-    procedure RegisterContent(cnt: anTextureContent);
+    procedure RegisterContent(cnt: anTextureContent; Display: boolean);
     procedure UnRegisterContent(cnt: anTextureContent);
 
     procedure RegisterLayerObject(obj: anAnimationLayerObject);
 
     function SelectedSymbol: anSymbol;
-    procedure RegisterSymbol(sym: anSymbol);
+    procedure RegisterSymbol(sym: anSymbol; Display: boolean);
     procedure UnRegisterSymbol(sym: anSymbol);
 
     procedure RegisterOtherObject(ObjName: AnsiString; ImageIdx: Integer;
@@ -505,6 +509,26 @@ type
     procedure SetValue(const NewValue: ansistring); override;
   end;
 
+  { TTileSetSelectPropertyEditor }
+
+  TTileSetSelectPropertyEditor = class(TPersistentPropertyEditor)
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    function GetValue: AnsiString; override;
+    procedure GetValues(Proc: TGetStrProc); override;
+    procedure SetValue(const NewValue: ansistring); override;
+  end;
+
+  { TOtherTileSetSelectPropertyEditor }
+
+  TOtherTileSetSelectPropertyEditor = class(TPersistentPropertyEditor)
+  public
+    function GetAttributes: TPropertyAttributes; override;
+    function GetValue: AnsiString; override;
+    procedure GetValues(Proc: TGetStrProc); override;
+    procedure SetValue(const NewValue: ansistring); override;
+  end;
+
   { TLookUpPropertyEditor }
 
   TLookUpPropertyEditor = class(TPersistentPropertyEditor)
@@ -532,11 +556,115 @@ implementation
 
 uses u_editorhistory, u_preview_form;
 
+{ TOtherTileSetSelectPropertyEditor }
+
+function TOtherTileSetSelectPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result:= [paValueList];
+end;
+
+function TOtherTileSetSelectPropertyEditor.GetValue: AnsiString;
+var obj: anAnimatedSpriteTextureTileSet;
+begin
+  obj := anAnimatedSpriteTextureTileSet(GetObjectValue);
+  if Assigned(obj) then
+    Result := obj.Name
+  else
+    Result := '';
+end;
+
+procedure TOtherTileSetSelectPropertyEditor.GetValues(Proc: TGetStrProc);
+var i: integer;
+  sym: anSymbol;
+  tex: anAnimatedSpriteTexture;
+  key: anAnimationKeyFrameInstance;
+begin
+  key := anAnimationKeyFrameInstance(Self.PropertyHook.LookupRoot);
+  if Assigned(key.ActiveProperties) and (key.ActiveProperties is anOtherAnimationSpriteProperty) then begin
+    sym := anAnimationSymbolObject(key.ObjectTo).Symbol;
+    if Assigned(sym.Texture) and (sym.Texture is anAnimatedSpriteTexture) then begin
+      tex := anAnimatedSpriteTexture(sym.Texture);
+      for i := 0 to tex.TileSets.Count - 1 do
+        Proc(tex.TileSets.Keys[i]);
+    end;
+  end;
+end;
+
+procedure TOtherTileSetSelectPropertyEditor.SetValue(const NewValue: ansistring);
+var i: integer;
+  idx: LongInt;
+  key: anAnimationKeyFrameInstance;
+  sym: anSymbol;
+  tex: anAnimatedSpriteTexture;
+begin
+  key := anAnimationKeyFrameInstance(Self.PropertyHook.LookupRoot);
+  if Assigned(key.ActiveProperties) and (key.ActiveProperties is anOtherAnimationSpriteProperty) then begin
+    sym := anAnimationSymbolObject(key.ObjectTo).Symbol;
+    if Assigned(sym.Texture) and (sym.Texture is anAnimatedSpriteTexture) then begin
+      tex := anAnimatedSpriteTexture(sym.Texture);
+      idx := tex.TileSets.IndexOf(NewValue);
+      if idx >= 0 then begin
+        SetPtrValue(tex.TileSets.Data[idx]);
+      end else begin
+        SetPtrValue(nil);
+      end;
+    end;
+  end;
+end;
+
+{ TTileSetSelectPropertyEditor }
+
+function TTileSetSelectPropertyEditor.GetAttributes: TPropertyAttributes;
+begin
+  Result:= [paValueList];
+end;
+
+function TTileSetSelectPropertyEditor.GetValue: AnsiString;
+var obj: anAnimatedSpriteTextureTileSet;
+begin
+  obj := anAnimatedSpriteTextureTileSet(GetObjectValue);
+  if Assigned(obj) then
+    Result := obj.Name
+  else
+    Result := '';
+end;
+
+procedure TTileSetSelectPropertyEditor.GetValues(Proc: TGetStrProc);
+var i: integer;
+  sym: anSymbol;
+  tex: anAnimatedSpriteTexture;
+begin
+  sym := anSymbol(Self.PropertyHook.LookupRoot);
+  if Assigned(sym.Texture) and (sym.Texture is anAnimatedSpriteTexture) then begin
+    tex := anAnimatedSpriteTexture(sym.Texture);
+    for i := 0 to tex.TileSets.Count - 1 do
+      Proc(tex.TileSets.Keys[i]);
+  end;
+end;
+
+procedure TTileSetSelectPropertyEditor.SetValue(const NewValue: ansistring);
+var i: integer;
+  sym: anSymbol;
+  tex: anAnimatedSpriteTexture;
+  idx: LongInt;
+begin
+  sym := anSymbol(Self.PropertyHook.LookupRoot);
+  if Assigned(sym.Texture) and (sym.Texture is anAnimatedSpriteTexture) then begin
+    tex := anAnimatedSpriteTexture(sym.Texture);
+    idx := tex.TileSets.IndexOf(NewValue);
+    if idx >= 0 then begin
+      SetPtrValue(tex.TileSets.Data[idx]);
+    end else begin
+      SetPtrValue(nil);
+    end;
+  end;
+end;
+
 { TLookUpPropertyEditor }
 
 function TLookUpPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result:= [paMultiSelect, paSubProperties, paValueList];
+  Result:= [paValueList];
 end;
 
 function TLookUpPropertyEditor.GetValue: AnsiString;
@@ -575,7 +703,7 @@ end;
 
 function TContentSelectPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result:= [paMultiSelect, paSubProperties, paValueList];
+  Result:= [paValueList];
 end;
 
 function TContentSelectPropertyEditor.GetValue: AnsiString;
@@ -632,7 +760,7 @@ end;
 
 function TAtlasZoneSelectPropertyEditor.GetAttributes: TPropertyAttributes;
 begin
-  Result:= [paMultiSelect, paSubProperties, paValueList];
+  Result:= [paValueList];
 end;
 
 function TAtlasZoneSelectPropertyEditor.GetValue: AnsiString;
@@ -823,7 +951,7 @@ procedure TMainForm.InitTexture
 var nw: TListItem;
 begin
   Editor.Project.Animation.AddTexture(Texture.GetUniqueName(pName), Texture);
-  RegisterTexture(Texture, ImgIdx);
+  RegisterTexture(Texture, ImgIdx, true);
   MadeChanges;
 
   DeleteTextureItemButton.Enabled := true;
@@ -838,14 +966,14 @@ var nw: TListItem;
     cn: anTextureContent;
 begin
   Result := Editor.Project.Animation.AddTexture('TEX_NEW', ClassOf);
-  RegisterTexture(Result, ImgIdx);
+  RegisterTexture(Result, ImgIdx, true);
   Editor.History.MadeChanges;
 
   if TextureCreation.Tag = 1 then begin
     od := TOpenDialog.Create(nil);
     if od.Execute then begin
       cn := Editor.Project.Animation.AddContent('CNT_NEW', anTextureContent);
-      RegisterContent(cn);
+      RegisterContent(cn, true);
       cn.LoadFromFile(od.FileName, MainForm.GetSavePromt(od));
       Result.FileContent := cn;
       texName := file_GetName(od.FileName);
@@ -1035,7 +1163,7 @@ begin
     sel := anSymbol(idx.Data);
     symbol := Editor.Project.Animation.AnimationLibrary.CloneSymbol(sel.Name);
     if symbol <> nil then begin
-      RegisterSymbol(symbol);
+      RegisterSymbol(symbol, true);
       MadeChanges;
       HandleObject(symbol);
     end;
@@ -1295,7 +1423,7 @@ begin
   if Assigned(AnimationsSelector.Selected) then begin
     sel := anAnimation(AnimationsSelector.Selected.Data);
     an := Editor.Project.Animation.CloneAnimation(sel.Name, anAnimationClass(sel.ClassType));
-    RegisterAnimation(an, sel.Prototype);
+    RegisterAnimation(an, sel.Prototype, true);
     SelectAnimation(an);
     HandleObject(an);
     Editor.RepaintTimeline;
@@ -1326,7 +1454,7 @@ begin
     inst.InterpolationMode := DEFAULT_INTERPOLATION_MODE;
   end;
   anim.Name := proto.Name + '_blender';
-  RegisterAnimation(anim, proto);
+  RegisterAnimation(anim, proto, true);
   HandleObject(anim);
 end;
 
@@ -1476,6 +1604,7 @@ begin
       KFPDeleteKeyFrames.Enabled := Assigned(inst.Prev);
       KFPAddFrames.Enabled := Assigned(inst.Next);
       KFPRemoveFrames.Enabled := KFPAddFrames.Enabled and (inst.Frames > 1);
+      KFPEditFrame.Enabled := Editor.Selected.Left - Editor.Selected.Right = 0;
     end;
   end;
 end;
@@ -1531,6 +1660,20 @@ begin
       end else
         inst.Frames := 1;
       Editor.RepaintTimeline;
+    end;
+  end;
+end;
+
+procedure TMainForm.KFPEditFrameClick(Sender: TObject);
+var
+  obj: anAnimationLOInstanceHolder;
+  inst: anAnimationKeyFrameInstance;
+begin
+  if Assigned(Editor.SelectedAnimation) then begin
+    if Editor.SelectionMode = smDone then begin
+      obj := Editor.SelectedAnimation.HolderByIndex[Editor.Selected.ObjectTo];
+      inst := obj.InstanceAt[Editor.Selected.Left];
+      HandleObject(inst);
     end;
   end;
 end;
@@ -1596,7 +1739,7 @@ begin
   od := TOpenDialog.Create(nil);
   if od.Execute then begin
     cn := Editor.Project.Animation.AddContent('NONAME', anTextureContent);
-    RegisterContent(cn);
+    RegisterContent(cn, true);
     cn.LoadFromFile(od.FileName, MainForm.GetSavePromt(od));
     HandleObject(cn);
   end;
@@ -1916,7 +2059,7 @@ begin
   symbol := Editor.Project.Animation.AnimationLibrary.AddSymbol(tex.Name + '_sym');
 
   symbol.Texture := tex;
-  RegisterSymbol(symbol);
+  RegisterSymbol(symbol, true);
   MadeChanges;
   Editor.History.MadeChanges;
 
@@ -2061,7 +2204,7 @@ begin
   an := Editor.Project.Animation.AddContent('NONAME', anTextureContent);
   an.OnNameChange := @OnContentNameChange;
   HandleObject(an);
-  RegisterContent(an);
+  RegisterContent(an, true);
 end;
 
 procedure TMainForm.BtnEditTextureContentClick(Sender: TObject);
@@ -2095,7 +2238,7 @@ begin
   an.OnNameChange := @OnAnimationNameChange;
   SelectAnimation(an);
   HandleObject(an);
-  RegisterAnimation(an, nil);
+  RegisterAnimation(an, nil, true);
 end;
 
 procedure TMainForm.AtlasTextureClick(Sender: TObject);
@@ -2112,7 +2255,7 @@ begin
     sel := anTexture(idx.Data);
     texture := Editor.Project.Animation.CloneTexture(sel.Name);
     if texture <> nil then begin
-      RegisterTexture(texture, idx.ImageIndex);
+      RegisterTexture(texture, idx.ImageIndex, true);
       MadeChanges;
       HandleObject(texture);
     end;
@@ -2168,6 +2311,8 @@ begin
   RegisterPropertyEditor(TypeInfo(anAnimationLayerObject), nil, 'LookUp', TLookUpPropertyEditor);
   RegisterPropertyEditor(TypeInfo(anAtlasTextureZone), nil, '', TAtlasZoneSelectPropertyEditor);
   RegisterPropertyEditor(TypeInfo(Integer), anAnimation, 'FPS', TFPSPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(anAnimatedSpriteTextureTileSet), anAnimatedSpriteTextureParams, '', TTileSetSelectPropertyEditor);
+  RegisterPropertyEditor(TypeInfo(anAnimatedSpriteTextureTileSet), anOtherAnimationSpriteProperty, '', TOtherTileSetSelectPropertyEditor);
 
   TimeLineBox.NodeDataSize := SizeOf(Pointer);
 
@@ -2230,7 +2375,7 @@ var symbol: anSymbol;
 begin
   symbol := Editor.Project.Animation.AnimationLibrary.AddSymbol('newSymbol');
 
-  RegisterSymbol(symbol);
+  RegisterSymbol(symbol, true);
   MadeChanges;
   Editor.History.MadeChanges;
 
@@ -2503,7 +2648,17 @@ begin
           key := inst.FirstInstance;
           frameid := 0;
           while assigned(key) do begin
-            if key.Name = '' then img_idx := IMG_KEYFRAME else img_idx := IMG_KEYFRAME_FLAG;
+            if key.Name = '' then begin
+              if (key.ActiveProperties.OnActivateCallback <> '') or
+                 (key.ActiveProperties.OnFrameCallback <> '') then
+                 img_idx := IMG_CALLBACK_FLAG
+                else begin
+                  if key.ActiveProperties.ThisAnimationAction.Action <> apaNone then
+                    img_idx := IMG_ACTION_FLAG
+                  else
+                    img_idx := IMG_KEYFRAME;
+                end;
+            end else img_idx := IMG_KEYFRAME_FLAG;
             MiniImages.Draw(PaintInfo.Canvas,
               PaintInfo.ContentRect.Left + frameid * FRAME_SIZE + FRAME_SIZE div 2 - IMG_SMALL_SIZE div 2,
               (PaintInfo.ContentRect.Bottom - PaintInfo.ContentRect.Top) div 2 - IMG_SMALL_SIZE div 2, img_idx
@@ -2777,7 +2932,7 @@ begin
       end;
       COLUMN_TIMELINE: begin
         AnimMouseDown := true;
-        f_id := (X - TimeLineBox.Header.Columns[COLUMN_NAME].Width) div FRAME_SIZE;
+        f_id := (X - TimeLineBox.Header.Columns[COLUMN_NAME].Width - 4) div FRAME_SIZE;
         if (f_id < Editor.Selected.Left) or (f_id > Editor.Selected.Right) then begin
            Editor.SelectFrame(f_id);
         end;
@@ -2793,10 +2948,11 @@ var
 begin
   if not AnimMouseDown then exit;
   if Editor.Selected.ObjectTo < 0 then exit;
+  if Y <= TimeLineBox.Header.Height then exit;
   obj := Editor.SelectedAnimation.ObjectByIndex[Editor.Selected.ObjectTo];
   case GetActiveColumn(X) of
     COLUMN_TIMELINE: begin
-      Editor.SelectFrame((X - TimeLineBox.Header.Columns[COLUMN_NAME].Width) div FRAME_SIZE);
+      Editor.SelectFrame((X - TimeLineBox.Header.Columns[COLUMN_NAME].Width - 4) div FRAME_SIZE);
     end;
   end;
 end;
@@ -2828,7 +2984,7 @@ begin
           KeyFramesPopup.PopUp(Mouse.CursorPos.x, Mouse.CursorPos.y);
         end;
         if Editor.Selected.ObjectTo < 0 then exit;
-        f_id := (X - TimeLineBox.Header.Columns[COLUMN_NAME].Width) div FRAME_SIZE;
+        f_id := (X - TimeLineBox.Header.Columns[COLUMN_NAME].Width - 4) div FRAME_SIZE;
         Editor.SelectDone(f_id);
       end;
     end;
@@ -2992,7 +3148,8 @@ begin
   exit(nil);
 end;
 
-procedure TMainForm.RegisterTexture(tex: anTexture; ImgIndex: integer);
+procedure TMainForm.RegisterTexture(tex: anTexture; ImgIndex: integer;
+  Display: boolean);
 var
   nw: TListItem;
 begin
@@ -3002,8 +3159,10 @@ begin
     Data := tex;
     ImageIndex := ImgIndex;
   end;
-  TexturesItems.Selected := nw;
-  FillDrawList(tex, SLOT_TEXTURE, nw.ImageIndex);
+  if Display then begin
+    TexturesItems.Selected := nw;
+    FillDrawList(tex, SLOT_TEXTURE, nw.ImageIndex);
+  end;
 end;
 
 procedure TMainForm.UnRegisterTexture(tex: anTexture);
@@ -3020,7 +3179,8 @@ begin
   end;
 end;
 
-function TMainForm.RegisterAnimation(anim, proto: anAnimation): TTreeNode;
+function TMainForm.RegisterAnimation(anim, proto: anAnimation; Display: boolean
+  ): TTreeNode;
 var
   node: TTreeNode;
   pnode: TTreeNode;
@@ -3028,7 +3188,6 @@ var
 begin
   img := GetAnimationImgId(anim);
   anim.OnNameChange := @OnAnimationNameChange;
-  FillDrawList(anim, SLOT_ANIMATION, img);
   if Assigned(proto) then
     pnode := AnimationsSelector.Items.FindNodeWithData(proto)
   else
@@ -3037,7 +3196,10 @@ begin
     anim.Name);
   node.Data := anim;
   node.StateIndex := img;
-  AnimationsSelector.Selected := node;
+  if Display then begin
+    FillDrawList(anim, SLOT_ANIMATION, img);
+    AnimationsSelector.Selected := node;
+  end;
   Result := node;
 end;
 
@@ -3072,19 +3234,21 @@ begin
   Editor.UpdateAnimationInstance;
 end;
 
-procedure TMainForm.RegisterContent(cnt: anTextureContent);
+procedure TMainForm.RegisterContent(cnt: anTextureContent; Display: boolean);
 var
   node: TListItem;
 begin
   cnt.OnNameChange := @OnContentNameChange;
-  FillDrawList(cnt, SLOT_CONTENT, SLOT_CONTENT_ID);
   node := TextureContent.Items.Add;
   with node do begin
     Caption := cnt.Name;
     ImageIndex := SLOT_CONTENT_ID;
     Data := cnt;
   end;
-  TextureContent.Selected := node;
+  if Display then begin
+    FillDrawList(cnt, SLOT_CONTENT, SLOT_CONTENT_ID);
+    TextureContent.Selected := node;
+  end;
 end;
 
 procedure TMainForm.UnRegisterContent(cnt: anTextureContent);
@@ -3133,7 +3297,7 @@ begin
   exit(nil);
 end;
 
-procedure TMainForm.RegisterSymbol(sym: anSymbol);
+procedure TMainForm.RegisterSymbol(sym: anSymbol; Display: boolean);
 var
   nw: TListItem;
 begin
@@ -3143,11 +3307,12 @@ begin
     Data := sym;
     ImageIndex := SYMBOL_ID;
   end;
-  LibraryItems.Selected := nw;
-  FillDrawList(sym, SLOT_SYMBOL, SLOT_SYMBOL_ID);
-
-  MainForm.DeleteLibraryItemButton.Enabled := true;
-  MainForm.CloneLibraryItemButton.Enabled := true;
+  if Display then begin
+    LibraryItems.Selected := nw;
+    FillDrawList(sym, SLOT_SYMBOL, SLOT_SYMBOL_ID);
+    MainForm.DeleteLibraryItemButton.Enabled := true;
+    MainForm.CloneLibraryItemButton.Enabled := true;
+  end;
 end;
 
 procedure TMainForm.UnRegisterSymbol(sym: anSymbol);

@@ -60,6 +60,8 @@ type
   anAnimationKeyFrameInstance        = class;
   anOtherKFProperty                  = class;
   anAnimationLayerAnimationInstance  = class;
+  anAnimatedSpriteTexture            = class;
+  anAnimationLayerSymbolInstance     = class;
 
   anAnimationEvent                 = procedure (Sender: anObjectWithData) of object;
   anString                         = string;
@@ -79,6 +81,7 @@ type
   anInstanceParameters = packed record
     dt: double;
     Frame: integer;
+    Data: Pointer;
   end;
 
   anDrawResult = record
@@ -275,13 +278,18 @@ type
 
       function HaveTexture: Boolean; virtual;
       function GetTexture: Pointer; virtual;
-      function GetOtherProperties(AnimationTo: anAnimationPrototype): anOtherKFProperty; virtual;
+
+      function GetOtherProperties(AnimationTo: anAnimationPrototype; pKeyFrame: anAnimationKeyFrameInstance): anOtherKFProperty; virtual;
+      function GetObjectInstance(AnimInstance: anAnimationInstance;
+        ObjectTo: anAnimationLayerObject;
+        HolderTo: anAnimationLOInstanceHolder): anAnimationLayerObjectInstance; virtual;
+
       function FormatTexture(TexturePointer: Pointer): zglPTexture; virtual;
       procedure ReleaseTexture(TexturePointer: Pointer); virtual;
 
       procedure Draw(Transform: anTransform; pContent: zglPTexture;
-         Params: anPInstanceParameters; FX: LongWord = FX_BLEND); virtual;
-      procedure Update(dt: Double; Params: anPInstanceParameters); virtual;
+         pInstance: anAnimationLayerSymbolInstance;
+         FX: LongWord = FX_BLEND); virtual;
 
       constructor Create(pTexture: anTexture; pSymbol: anSymbol); virtual;
   end;
@@ -301,7 +309,8 @@ type
     public
       procedure AssignTo(Dest: TPersistent); override;
       procedure Draw(Transform: anTransform; pContent: zglPTexture;
-         Params: anPInstanceParameters; FX: LongWord = FX_BLEND); override;
+         pInstance: anAnimationLayerSymbolInstance;
+         FX: LongWord = FX_BLEND); override;
   end;
 
   { anStaticSpriteTexture }
@@ -343,44 +352,92 @@ type
       procedure SaveToRecord(rec: TDBRecord); override;
       procedure LoadFromRecord(rec: TDBRecord); override;
 
-      function GetOtherProperties(AnimationTo: anAnimationPrototype): anOtherKFProperty; override;
+      function GetOtherProperties(AnimationTo: anAnimationPrototype; pKeyFrame: anAnimationKeyFrameInstance): anOtherKFProperty; override;
+      function GetObjectInstance(AnimInstance: anAnimationInstance;
+        ObjectTo: anAnimationLayerObject;
+        HolderTo: anAnimationLOInstanceHolder): anAnimationLayerObjectInstance; override;
 
       procedure Draw(Transform: anTransform; pContent: zglPTexture;
-         Params: anPInstanceParameters; FX: LongWord = FX_BLEND); override;
+         pInstance: anAnimationLayerSymbolInstance;
+         FX: LongWord = FX_BLEND); override;
 
       constructor Create(pTexture: anTexture; pSymbol: anSymbol); override;
   end;
+
+  { anAnimatedSpriteTextureTile }
+
+  anAnimatedSpriteTextureTile = class ( anObjectWithData )
+    private
+      fTile: anPosition;
+      fTime: Single;
+    published
+      property Tile: anPosition read fTile write fTile;
+      property Time: Single read fTime write fTime;
+    public
+
+      procedure SaveToRecord(rec: TDBRecord);
+      procedure LoadFromRecord(rec: TDBRecord);
+
+      constructor Create;
+  end;
+
+  anAnimatedSpriteTextureTileList = TFPGList<anAnimatedSpriteTextureTile>;
+
+  { anAnimatedSpriteTextureTileSet }
+
+  anAnimatedSpriteTextureTileSet = class ( anNamedObject )
+    private
+      fTexture: anAnimatedSpriteTexture;
+      fTileList: anAnimatedSpriteTextureTileList;
+    public
+      property Texture: anAnimatedSpriteTexture read fTexture write fTexture;
+      property TileList: anAnimatedSpriteTextureTileList read fTileList write fTileList;
+
+      procedure SaveToRecord(rec: TDBRecord);
+      procedure LoadFromRecord(rec: TDBRecord);
+
+      constructor Create(pTexture: anAnimatedSpriteTexture);
+      destructor Destroy; override;
+  end;
+
+  anAnimatedSpriteTextureTileSetList = TFPGMap<anString, anAnimatedSpriteTextureTileSet>;
 
   { anAnimatedSpriteTexture }
 
   anAnimatedSpriteTexture = class ( anStaticSpriteTexture )
     private
+      fTileSets: anAnimatedSpriteTextureTileSetList;
       function CreateParams(pSymbol: anSymbol): anTextureParams; override;
     public
+      property TileSets: anAnimatedSpriteTextureTileSetList read fTileSets write fTileSets;
       procedure AssignTo(Dest: TPersistent); override;
+      procedure SaveToRecord(rec: TDBRecord); override;
+      procedure LoadFromRecord(rec: TDBRecord); override;
+
       constructor Create(pAnimation: anAnimationSet); override;
+      destructor Destroy; override;
   end;
 
   { anAnimatedSpriteTextureParams }
 
   anAnimatedSpriteTextureParams = class ( anTextureParams )
     private
-      fTileFrom, fTileTo: integer;
-      fAnimationSpeed: Integer;
+      fTileSet: anAnimatedSpriteTextureTileSet;
     published
-       property AnimationSpeed: integer read fAnimationSpeed write fAnimationSpeed;
-       property TileFrom: integer read fTileFrom write fTileFrom;
-       property TileTo: integer read fTileTo write fTileTo;
+       property TileSet: anAnimatedSpriteTextureTileSet read fTileSet write fTileSet;
     public
       procedure AssignTo(Dest: TPersistent); override;
       procedure SaveToRecord(rec: TDBRecord); override;
       procedure LoadFromRecord(rec: TDBRecord); override;
 
-      function GetOtherProperties(AnimationTo: anAnimationPrototype): anOtherKFProperty; override;
+      function GetOtherProperties(AnimationTo: anAnimationPrototype; pKeyFrame: anAnimationKeyFrameInstance): anOtherKFProperty; override;
+      function GetObjectInstance(AnimInstance: anAnimationInstance;
+         ObjectTo: anAnimationLayerObject;
+         HolderTo: anAnimationLOInstanceHolder): anAnimationLayerObjectInstance; override;
 
       procedure Draw(Transform: anTransform; pContent: zglPTexture;
-         Params: anPInstanceParameters; FX: LongWord = FX_BLEND); override;
-      procedure Update(dt: Double; Params: anPInstanceParameters); override;
+         pInstance: anAnimationLayerSymbolInstance;
+         FX: LongWord = FX_BLEND); override;
 
       constructor Create(pTexture: anTexture; pSymbol: anSymbol); override;
   end;
@@ -562,11 +619,13 @@ type
       fThisAnimationAction: anAnimationActioner;
       fAnimation: anAnimation;
       fOnActivateCallback, fOnFrameCallback: anString;
+      fKeyFrame: anAnimationKeyFrameInstance;
     published
       property OnActivateCallback: anString read fOnActivateCallback write fOnActivateCallback;
       property OnFrameCallback: anString read fOnFrameCallback write fOnFrameCallback;
       property ThisAnimationAction: anAnimationActioner read fThisAnimationAction write fThisAnimationAction;
     public
+      property KeyFrame: anAnimationKeyFrameInstance read fKeyFrame write fKeyFrame;
       property Animation: anAnimation read fAnimation write fAnimation;
 
       procedure OnActivate(Obj: anAnimationLayerObjectInstance; KeyFrom: anAnimationKeyFrameInstance); virtual;
@@ -575,7 +634,7 @@ type
       procedure SaveToRecord(rec: TDBRecord); virtual;
       procedure LoadFromRecord(rec: TDBRecord); virtual;
 
-      constructor Create(pAnimation: anAnimation); virtual;
+      constructor Create(pAnimation: anAnimation; pKeyFrame: anAnimationKeyFrameInstance); virtual;
       destructor Destroy; override;
   end;
 
@@ -594,7 +653,7 @@ type
       procedure SaveToRecord(rec: TDBRecord); override;
       procedure LoadFromRecord(rec: TDBRecord); override;
 
-      constructor Create(pAnimation: anAnimation); override;
+      constructor Create(pAnimation: anAnimation; pKeyFrame: anAnimationKeyFrameInstance); override;
       destructor Destroy; override;
   end;
 
@@ -614,23 +673,28 @@ type
       procedure SaveToRecord(rec: TDBRecord); override;
       procedure LoadFromRecord(rec: TDBRecord); override;
 
-      constructor Create(pAnimation: anAnimation); override;
+      constructor Create(pAnimation: anAnimation; pKeyFrame: anAnimationKeyFrameInstance); override;
   end;
 
   { anOtherAnimationSpriteProperty }
 
+  anAnimationTileSetAction = (tsaNone, tsaStop, tsaPlay, tsaChangeTileSetAndStop, tsaChangeTileSetAndPlay);
+
   anOtherAnimationSpriteProperty = class (anOtherKFProperty)
     private
-      //
+      fTileSetAction: anAnimationTileSetAction;
+      fTileSetTo: anAnimatedSpriteTextureTileSet;
     published
-      //
+      property TileSetAction: anAnimationTileSetAction read fTileSetAction write fTileSetAction;
+      property TileSetTo: anAnimatedSpriteTextureTileSet read fTileSetTo write fTileSetTo;
     public
+      procedure OnActivate(Obj: anAnimationLayerObjectInstance; KeyFrom: anAnimationKeyFrameInstance); override;
       procedure OnFrame(Obj: anAnimationLayerObjectInstance; KeyFrom: anAnimationKeyFrameInstance; Frame: anPosition); override;
 
       procedure SaveToRecord(rec: TDBRecord); override;
       procedure LoadFromRecord(rec: TDBRecord); override;
 
-      constructor Create(pAnimation: anAnimation); override;
+      constructor Create(pAnimation: anAnimation; pKeyFrame: anAnimationKeyFrameInstance); override;
   end;
 
   { anAnimationKeyFrameInstance }
@@ -782,7 +846,7 @@ type
 
       function GetInstance(pHolder: anAnimationLOInstanceHolder; pTransform: anTransform; AtTime: integer): anAnimationKeyFrameInstance;
       function GetObjectInstance(AnimInstance: anAnimationInstance; HolderTo: anAnimationLOInstanceHolder): anAnimationLayerObjectInstance; virtual; abstract;
-      function GetOtherProperties: anOtherKFProperty; virtual;
+      function GetOtherProperties(pKeyFrame: anAnimationKeyFrameInstance): anOtherKFProperty; virtual;
 
       constructor Create(pAnimation: anAnimationPrototype;
         pParent: anAnimationLayerObject = nil); virtual;
@@ -798,10 +862,11 @@ type
     private
       fSwapContent: anTextureContent;
       fTextureData: Pointer;
-      Parameters: anInstanceParameters;
+      fState: anAnimationState;
     public
       property TextureData: Pointer read fTextureData write fTextureData;
       property SwapContent: anTextureContent read fSwapContent write fSwapContent;
+      property State: anAnimationState read fState write fState;
 
       procedure Play; override;
       procedure Stop(Pause: Boolean); override;
@@ -809,8 +874,37 @@ type
       procedure Update(dt: Double); override;
       procedure Draw(pTransform: anTransform; Time: Single; FX: LongWord = FX_BLEND); override;
 
-      constructor Create(pIntanceTo: anAnimationInstance; pObjectTo: anAnimationLayerObject; pHolder: anAnimationLOInstanceHolder);
+      constructor Create(pIntanceTo: anAnimationInstance; pObjectTo: anAnimationLayerObject; pHolder: anAnimationLOInstanceHolder); virtual;
       destructor Destroy; override;
+  end;
+
+  { anAnimationLayerStaticSymbolInstance }
+
+  anAnimationLayerStaticSymbolInstance = class (anAnimationLayerSymbolInstance)
+    private
+      fFrame: anPosition;
+    public
+      property Frame: anPosition read fFrame write fFrame;
+
+      constructor Create(pIntanceTo: anAnimationInstance; pObjectTo: anAnimationLayerObject; pHolder: anAnimationLOInstanceHolder); override;
+  end;
+
+  { anAnimationLayerAnimatedSymbolInstance }
+
+  anAnimationLayerAnimatedSymbolInstance = class (anAnimationLayerSymbolInstance)
+    private
+      fTileSet: anAnimatedSpriteTextureTileSet;
+      fDt: Single;
+      fFrame: anPosition;
+    public
+      property TileSet: anAnimatedSpriteTextureTileSet read fTileSet write fTileSet;
+      property DeltaTime: Single read fDt write fDt;
+      property Frame: anPosition read fFrame write fFrame;
+
+      procedure Update(dt: Double); override;
+      procedure Stop(Pause: Boolean); override;
+
+      constructor Create(pIntanceTo: anAnimationInstance; pObjectTo: anAnimationLayerObject; pHolder: anAnimationLOInstanceHolder); override;
   end;
 
   { anAnimationLayerAnimationInstance }
@@ -875,7 +969,7 @@ type
       procedure LoadFromRecord(rec: TDBRecord); override;
 
       function GetObjectInstance(AnimInstance: anAnimationInstance; HolderTo: anAnimationLOInstanceHolder): anAnimationLayerObjectInstance; override;
-      function GetOtherProperties: anOtherKFProperty; override;
+      function GetOtherProperties(pKeyFrame: anAnimationKeyFrameInstance): anOtherKFProperty; override;
 
       constructor Create(pSymbol: anSymbol;
         pAnimation: anAnimationPrototype;
@@ -934,7 +1028,7 @@ type
       procedure AssignTo(Dest: TPersistent); override;
       procedure SaveToRecord(rec: TDBRecord); override;
       procedure LoadFromRecord(rec: TDBRecord); override;
-      function GetOtherProperties: anOtherKFProperty; override;
+      function GetOtherProperties(pKeyFrame: anAnimationKeyFrameInstance): anOtherKFProperty; override;
 
       function GetObjectInstance(AnimInstance: anAnimationInstance; HolderTo: anAnimationLOInstanceHolder): anAnimationLayerObjectInstance; override;
 
@@ -1207,7 +1301,7 @@ type
       procedure SaveToRecord(rec: TDBRecord);
       procedure LoadFromRecord(rec: TDBRecord);
 
-      procedure Draw(Transform: anTransform; pContent: zglPTexture; Params: anPInstanceParameters);
+      procedure Draw(Transform: anTransform; pContent: zglPTexture);
 
       constructor Create(pLibrary: anLibrary);
       destructor Destroy; override;
@@ -1309,6 +1403,113 @@ type
 
 implementation
 
+{ anAnimationLayerAnimatedSymbolInstance }
+
+procedure anAnimationLayerAnimatedSymbolInstance.Update(dt: Double);
+begin
+  inherited Update(dt);
+  if not Assigned(TileSet) then exit;
+  if TileSet.TileList.Count = 0 then exit;
+  if State = asStopped then exit;
+  DeltaTime := DeltaTime + dt;
+  if DeltaTime >= TileSet.TileList[Frame].Time then begin
+    Frame := Frame + 1;
+    if Frame >= TileSet.TileList.Count then
+      Frame := 0;
+    DeltaTime := 0;
+  end;
+end;
+
+procedure anAnimationLayerAnimatedSymbolInstance.Stop(Pause: Boolean);
+begin
+  inherited Stop(Pause);
+  if not Pause then begin
+    DeltaTime := 0;
+    Frame := 0;
+  end;
+end;
+
+constructor anAnimationLayerAnimatedSymbolInstance.Create(
+  pIntanceTo: anAnimationInstance; pObjectTo: anAnimationLayerObject;
+  pHolder: anAnimationLOInstanceHolder);
+begin
+  inherited Create(pIntanceTo, pObjectTo, pHolder);
+  Frame := 0;
+  DeltaTime := 0;
+  TileSet := nil;
+end;
+
+{ anAnimationLayerStaticSymbolInstance }
+
+constructor anAnimationLayerStaticSymbolInstance.Create(
+  pIntanceTo: anAnimationInstance; pObjectTo: anAnimationLayerObject;
+  pHolder: anAnimationLOInstanceHolder);
+begin
+  inherited Create(pIntanceTo, pObjectTo, pHolder);
+  Frame := 0;
+end;
+
+{ anAnimatedSpriteTextureTile }
+
+procedure anAnimatedSpriteTextureTile.SaveToRecord(rec: TDBRecord);
+begin
+  rec.ChildByName['f'].AsSingle := Time;
+  rec.ChildByName['t'].AsInteger := Tile;
+end;
+
+procedure anAnimatedSpriteTextureTile.LoadFromRecord(rec: TDBRecord);
+begin
+  Time := rec.ChildByName['f'].AsSingle;
+  Tile := rec.ChildByName['t'].AsInteger;
+end;
+
+constructor anAnimatedSpriteTextureTile.Create;
+begin
+  Tile := 0;
+  Time := 1;
+end;
+
+{ anAnimatedSpriteTextureTileSet }
+
+procedure anAnimatedSpriteTextureTileSet.SaveToRecord(rec: TDBRecord);
+var
+  i: Integer;
+begin
+  rec.Name := Name;
+  rec.ChildCount := TileList.Count;
+  for i := 0 to TileList.Count - 1 do
+    TileList[i].SaveToRecord(rec.Child[i]);
+end;
+
+procedure anAnimatedSpriteTextureTileSet.LoadFromRecord(rec: TDBRecord);
+var tile: anAnimatedSpriteTextureTile;
+  i: Integer;
+begin
+  for i := 0 to rec.ChildCount - 1 do begin
+    tile := anAnimatedSpriteTextureTile.Create;
+    tile.LoadFromRecord(rec.Child[i]);
+    TileList.Add(tile);
+  end;
+end;
+
+constructor anAnimatedSpriteTextureTileSet.Create(
+  pTexture: anAnimatedSpriteTexture);
+begin
+  Texture := pTexture;
+  inherited Create(Texture.TileSets);
+  TileList := anAnimatedSpriteTextureTileList.Create;
+end;
+
+destructor anAnimatedSpriteTextureTileSet.Destroy;
+var
+  i: Integer;
+begin
+  for i := 0 to TileList.Count - 1 do
+    TileList[i].Free;
+  TileList.Free;
+  inherited Destroy;
+end;
+
 { anAnimationActioner }
 
 procedure anAnimationActioner.SaveToRecord(rec: TDBRecord);
@@ -1343,6 +1544,31 @@ end;
 
 { anOtherAnimationSpriteProperty }
 
+procedure anOtherAnimationSpriteProperty.OnActivate(
+  Obj: anAnimationLayerObjectInstance; KeyFrom: anAnimationKeyFrameInstance);
+var
+  inst: anAnimationLayerAnimatedSymbolInstance;
+begin
+  inherited OnActivate(Obj, KeyFrom);
+  inst := anAnimationLayerAnimatedSymbolInstance(Obj);
+  case TileSetAction of
+    tsaChangeTileSetAndStop: begin
+      inst.TileSet := TileSetTo;
+      inst.Stop(true);
+    end;
+    tsaChangeTileSetAndPlay: begin
+      inst.TileSet := TileSetTo;
+      inst.Play;
+    end;
+    tsaPlay: begin
+      inst.Play;
+    end;
+    tsaStop: begin
+      inst.Stop(true);
+    end;
+  end;
+end;
+
 procedure anOtherAnimationSpriteProperty.OnFrame(
   Obj: anAnimationLayerObjectInstance; KeyFrom: anAnimationKeyFrameInstance;
   Frame: anPosition);
@@ -1353,16 +1579,40 @@ end;
 procedure anOtherAnimationSpriteProperty.SaveToRecord(rec: TDBRecord);
 begin
   inherited SaveToRecord(rec);
+  rec.ChildByName['a'].AsByte := Byte(TileSetAction);
+  if Assigned(TileSetTo) then
+    rec.ChildByName['t'].AsString := TileSetTo.Name
+  else
+    rec.ChildByName['t'].AsString := '';
 end;
 
 procedure anOtherAnimationSpriteProperty.LoadFromRecord(rec: TDBRecord);
+var
+  ts_name: String;
+  inst: anAnimationLayerSymbolInstance;
+  inst_sym: anAnimationSymbolObject;
+  inst_tex: anAnimatedSpriteTexture;
+  idx: LongInt;
 begin
   inherited LoadFromRecord(rec);
+  TileSetAction := anAnimationTileSetAction(rec.ChildByName['a'].AsByte);
+  ts_name := rec.ChildByName['t'].AsString;
+  if ts_name <> '' then begin
+    inst_sym := anAnimationSymbolObject(KeyFrame.ObjectTo);
+    inst_tex := anAnimatedSpriteTexture(inst_sym.Symbol.Texture);
+    if Assigned(inst_tex) then begin
+      idx := inst_tex.TileSets.IndexOf(ts_name);
+      if idx >= 0 then
+        TileSetTo := inst_tex.TileSets.Data[idx];
+    end;
+  end;
 end;
 
-constructor anOtherAnimationSpriteProperty.Create(pAnimation: anAnimation);
+constructor anOtherAnimationSpriteProperty.Create(pAnimation: anAnimation;
+  pKeyFrame: anAnimationKeyFrameInstance);
 begin
-  inherited Create(pAnimation);
+  inherited Create(pAnimation, pKeyFrame);
+  TileSetAction := tsaNone;
 end;
 
 { anOtherStaticSpriteProperty }
@@ -1370,14 +1620,14 @@ end;
 procedure anOtherStaticSpriteProperty.OnActivate(Obj: anAnimationLayerObjectInstance;
   KeyFrom: anAnimationKeyFrameInstance);
 var
-  inst: anAnimationLayerSymbolInstance;
+  inst: anAnimationLayerStaticSymbolInstance;
 begin
   inherited OnActivate(Obj, KeyFrom);
 
-  inst := anAnimationLayerSymbolInstance(Obj);
+  inst := anAnimationLayerStaticSymbolInstance(Obj);
 
   case Action of
-    spaSetFrame: inst.Parameters.Frame := FrameTo;
+    spaSetFrame: inst.Frame := FrameTo;
   end;
 end;
 
@@ -1405,9 +1655,10 @@ begin
     FrameTo := rec.ChildByName['f'].AsInteger;
 end;
 
-constructor anOtherStaticSpriteProperty.Create(pAnimation: anAnimation);
+constructor anOtherStaticSpriteProperty.Create(pAnimation: anAnimation;
+  pKeyFrame: anAnimationKeyFrameInstance);
 begin
-  inherited Create(pAnimation);
+  inherited Create(pAnimation, pKeyFrame);
 end;
 
 { anOtherKFProperty }
@@ -1451,9 +1702,11 @@ begin
   ThisAnimationAction.LoadFromRecord(rec.ChildByName['this_anim']);
 end;
 
-constructor anOtherKFProperty.Create(pAnimation: anAnimation);
+constructor anOtherKFProperty.Create(pAnimation: anAnimation;
+  pKeyFrame: anAnimationKeyFrameInstance);
 begin
   Animation := pAnimation;
+  KeyFrame := pKeyFrame;
   OnActivateCallback := '';
   OnFrameCallback := '';
   ThisAnimationAction := anAnimationActioner.Create;
@@ -1489,10 +1742,11 @@ begin
   ChildAnimationAction.LoadFromRecord(rec.ChildByName['child_anim']);
 end;
 
-constructor anOtherAnimationProperty.Create(pAnimation: anAnimation);
+constructor anOtherAnimationProperty.Create(pAnimation: anAnimation;
+  pKeyFrame: anAnimationKeyFrameInstance);
 begin
   ChildAnimationAction := anAnimationActioner.Create;
-  inherited Create(pAnimation);
+  inherited Create(pAnimation, pKeyFrame);
 end;
 
 destructor anOtherAnimationProperty.Destroy;
@@ -2029,9 +2283,10 @@ begin
   inherited LoadFromRecord(rec);
 end;
 
-function anAnimationAnimationObject.GetOtherProperties: anOtherKFProperty;
+function anAnimationAnimationObject.GetOtherProperties(
+  pKeyFrame: anAnimationKeyFrameInstance): anOtherKFProperty;
 begin
-  Result := anOtherAnimationProperty.Create(Animation);
+  Result := anOtherAnimationProperty.Create(Animation, pKeyFrame);
 end;
 
 function anAnimationAnimationObject.GetObjectInstance(
@@ -2075,20 +2330,17 @@ end;
 
 procedure anAnimationLayerSymbolInstance.Play;
 begin
-  //
+  State := asPlaying;
 end;
 
 procedure anAnimationLayerSymbolInstance.Stop(Pause: Boolean);
 begin
-  if not Pause then begin
-    Parameters.dt := 0;
-    Parameters.Frame := 1;
-  end;
+  State := asStopped;
 end;
 
 procedure anAnimationLayerSymbolInstance.Update(dt: Double);
 begin
-  anAnimationSymbolObject(ObjectTo).Symbol.TextureParams.Update(dt, @Parameters);
+  // nothing to do
 end;
 
 procedure anAnimationLayerSymbolInstance.Draw(pTransform: anTransform;
@@ -2102,7 +2354,7 @@ begin
     symbol := anAnimationSymbolObject(ObjectTo).Symbol;
     if Assigned(Symbol.TextureParams) then begin
       Symbol.TextureParams.Draw(Res.Transform,
-        Symbol.TextureParams.FormatTexture(TextureData), @Parameters, FX);
+        Symbol.TextureParams.FormatTexture(TextureData), Self, FX);
     end;
   end;
 end;
@@ -2114,7 +2366,7 @@ begin
   SwapContent := nil;
   inherited Create(pIntanceTo, pObjectTo, pHolder);
   TextureData := anAnimationSymbolObject(ObjectTo).Symbol.TextureParams.GetTexture;
-  Stop(false);
+  Stop(False);
 end;
 
 destructor anAnimationLayerSymbolInstance.Destroy;
@@ -2144,18 +2396,23 @@ begin
   Symbol := Animation.Animation.AnimationLibrary.Symbols[rec.AsString];
   inherited LoadFromRecord(rec);
 end;
+
 function anAnimationSymbolObject.GetObjectInstance(
   AnimInstance: anAnimationInstance; HolderTo: anAnimationLOInstanceHolder
   ): anAnimationLayerObjectInstance;
 begin
-  Result := anAnimationLayerSymbolInstance.Create(AnimInstance, Self, HolderTo);
+  if Assigned(Symbol.TextureParams) then
+    Result := Symbol.TextureParams.GetObjectInstance(AnimInstance, Self, HolderTo)
+  else
+    Result := anAnimationLayerSymbolInstance.Create(AnimInstance, Self, HolderTo);
 end;
 
-function anAnimationSymbolObject.GetOtherProperties: anOtherKFProperty;
+function anAnimationSymbolObject.GetOtherProperties(
+  pKeyFrame: anAnimationKeyFrameInstance): anOtherKFProperty;
 begin
-  Result := Symbol.TextureParams.GetOtherProperties(Animation);
+  Result := Symbol.TextureParams.GetOtherProperties(Animation, pKeyFrame);
   if not Assigned(Result) then
-    Result := inherited GetOtherProperties;
+    Result := inherited GetOtherProperties(pKeyFrame);
 end;
 
 constructor anAnimationSymbolObject.Create(pSymbol: anSymbol;
@@ -2342,8 +2599,8 @@ begin
           end;
         end else begin
           CurrentFrame := CurrentFrame + 1;
-          CheckFrame;
         end;
+        CheckFrame;
       end;
     end;
   end;
@@ -2572,7 +2829,7 @@ begin
   Rounds := 0;
   Name := '';
   Animation := pAnimation;
-  ActiveProperties := ObjectTo.GetOtherProperties;
+  ActiveProperties := ObjectTo.GetOtherProperties(Self);
   Init(pHolder, pPrev, pNext, pTimeAt);
 end;
 
@@ -2587,7 +2844,7 @@ begin
   Rounds := 0;
   Name := '';
   Animation := pAnimation;
-  ActiveProperties := ObjectTo.GetOtherProperties;
+  ActiveProperties := ObjectTo.GetOtherProperties(Self);
   Init(pHolder, pPrev, pNext, 0);
 end;
 
@@ -2758,9 +3015,10 @@ begin
     Self, pHolder.Animation, AtTime, pTransform);
 end;
 
-function anAnimationLayerObject.GetOtherProperties: anOtherKFProperty;
+function anAnimationLayerObject.GetOtherProperties(
+  pKeyFrame: anAnimationKeyFrameInstance): anOtherKFProperty;
 begin
-  Result := anOtherKFProperty.Create(Animation);
+  Result := anOtherKFProperty.Create(Animation, pKeyFrame);
 end;
 
 constructor anAnimationLayerObject.Create(pAnimation: anAnimationPrototype;
@@ -3552,10 +3810,17 @@ begin
     Result := nil;
 end;
 
-function anTextureParams.GetOtherProperties(AnimationTo: anAnimationPrototype
-  ): anOtherKFProperty;
+function anTextureParams.GetOtherProperties(AnimationTo: anAnimationPrototype;
+  pKeyFrame: anAnimationKeyFrameInstance): anOtherKFProperty;
 begin
   Result := nil;
+end;
+
+function anTextureParams.GetObjectInstance(AnimInstance: anAnimationInstance;
+  ObjectTo: anAnimationLayerObject; HolderTo: anAnimationLOInstanceHolder
+  ): anAnimationLayerObjectInstance;
+begin
+  Result := anAnimationLayerSymbolInstance.Create(AnimInstance, ObjectTo, HolderTo);
 end;
 
 function anTextureParams.FormatTexture(TexturePointer: Pointer): zglPTexture;
@@ -3569,18 +3834,13 @@ begin
 end;
 
 procedure anTextureParams.Draw(Transform: anTransform; pContent: zglPTexture;
-  Params: anPInstanceParameters; FX: LongWord);
+  pInstance: anAnimationLayerSymbolInstance; FX: LongWord);
 begin
   if not Assigned(pContent) then exit;
   fx2d_SetRotatingPivot(
     Symbol.PivotX * Transform.Scale * anTransformClass.BoolToSign(Transform.Flip) + (Width(pContent) / 2) * Transform.Scale,
     Symbol.PivotY * Transform.Scale + (Height(pContent) / 2) * Transform.Scale
   );
-end;
-
-procedure anTextureParams.Update(dt: Double; Params: anPInstanceParameters);
-begin
-  //
 end;
 
 constructor anTextureParams.Create(pTexture: anTexture; pSymbol: anSymbol);
@@ -3598,7 +3858,8 @@ begin
 end;
 
 procedure anFullTextureParams.Draw(Transform: anTransform;
-  pContent: zglPTexture; Params: anPInstanceParameters; FX: LongWord);
+  pContent: zglPTexture; pInstance: anAnimationLayerSymbolInstance; FX: LongWord
+  );
 var scX, scY: Single;
     LocalTranform: anTransform;
     flX, flY: Integer;
@@ -3610,7 +3871,7 @@ begin
   flY := 1;
   scX := Width(pContent) * LocalTranform.Scale;
   scY := Height(pContent) * LocalTranform.Scale;
-  inherited Draw(Transform, pContent, Params, FX);
+  inherited Draw(Transform, pContent, pInstance, FX);
   angle_f := Transform.Rotation - Symbol.Rotation;
   anTransformClass.GetAngle(angle_f, Transform.Rotation - 90, Transform.Flip);
   ssprite2d_Draw(pContent,
@@ -3873,13 +4134,26 @@ begin
 end;
 
 function anStaticSpriteTextureParams.GetOtherProperties(
-  AnimationTo: anAnimationPrototype): anOtherKFProperty;
+  AnimationTo: anAnimationPrototype; pKeyFrame: anAnimationKeyFrameInstance
+  ): anOtherKFProperty;
 begin
-  Result := anOtherStaticSpriteProperty.Create(AnimationTo);
+  Result := anOtherStaticSpriteProperty.Create(AnimationTo, pKeyFrame);
+end;
+
+function anStaticSpriteTextureParams.GetObjectInstance(
+  AnimInstance: anAnimationInstance; ObjectTo: anAnimationLayerObject;
+  HolderTo: anAnimationLOInstanceHolder): anAnimationLayerObjectInstance;
+var
+  inst: anAnimationLayerStaticSymbolInstance;
+begin
+  inst := anAnimationLayerStaticSymbolInstance.Create(AnimInstance, ObjectTo, HolderTo);
+  inst.Frame := Tile;
+  Result := inst;
 end;
 
 procedure anStaticSpriteTextureParams.Draw(Transform: anTransform;
-  pContent: zglPTexture; Params: anPInstanceParameters; FX: LongWord);
+  pContent: zglPTexture; pInstance: anAnimationLayerSymbolInstance; FX: LongWord
+  );
 var scX, scY: Single;
     LocalTranform: anTransform;
     flX: Integer;
@@ -3893,7 +4167,7 @@ begin
   flY := 1;
   scX := Width(pContent) * LocalTranform.Scale;
   scY := Height(pContent) * LocalTranform.Scale;
-  inherited Draw(Transform, pContent, Params, FX);
+  inherited Draw(Transform, pContent, pInstance, FX);
   angle_f := Transform.Rotation - Symbol.Rotation;
   anTransformClass.GetAngle(angle_f, Transform.Rotation - 90, Transform.Flip);
 
@@ -4172,51 +4446,83 @@ procedure anAnimatedSpriteTextureParams.AssignTo(Dest: TPersistent);
 var dst: anAnimatedSpriteTextureParams;
 begin
   dst := anAnimatedSpriteTextureParams(Dest);
-  dst.TileFrom := TileFrom;
-  dst.TileTo := TileTo;
+  dst.TileSet := TileSet;
 end;
 
 procedure anAnimatedSpriteTextureParams.SaveToRecord(rec: TDBRecord);
 begin
-  rec.ChildByName['tile_from'].AsInteger := TileFrom;
-  rec.ChildByName['tile_to'].AsInteger := TileTo;
+  if Assigned(TileSet) then
+    rec.ChildByName['tile_set'].AsString := TileSet.Name
+  else
+    rec.ChildByName['tile_set'].AsString := '';
 end;
 
 procedure anAnimatedSpriteTextureParams.LoadFromRecord(rec: TDBRecord);
+var
+  tileset_name: String;
+  tex_anim: anAnimatedSpriteTexture;
+  idx: LongInt;
 begin
-  TileFrom := rec.ChildByName['tile_from'].AsInteger;
-  TileTo := rec.ChildByName['tile_to'].AsInteger;
+  tileset_name := rec.ChildByName['tile_set'].AsString;
+  if tileset_name <> '' then begin
+    tex_anim := anAnimatedSpriteTexture(Texture);
+    idx := tex_anim.TileSets.IndexOf(tileset_name);
+    if idx >= 0 then begin
+      TileSet := tex_anim.TileSets.Data[idx];
+    end;
+  end;
 end;
 
 function anAnimatedSpriteTextureParams.GetOtherProperties(
-  AnimationTo: anAnimationPrototype): anOtherKFProperty;
+  AnimationTo: anAnimationPrototype; pKeyFrame: anAnimationKeyFrameInstance
+  ): anOtherKFProperty;
 begin
-  Result := anOtherAnimationSpriteProperty.Create(AnimationTo);
+  Result := anOtherAnimationSpriteProperty.Create(AnimationTo, pKeyFrame);
+end;
+
+function anAnimatedSpriteTextureParams.GetObjectInstance(
+  AnimInstance: anAnimationInstance; ObjectTo: anAnimationLayerObject;
+  HolderTo: anAnimationLOInstanceHolder): anAnimationLayerObjectInstance;
+var
+  inst: anAnimationLayerAnimatedSymbolInstance;
+begin
+  inst := anAnimationLayerAnimatedSymbolInstance.Create(AnimInstance, ObjectTo, HolderTo);
+  inst.TileSet := TileSet;
+  Result := inst;
 end;
 
 procedure anAnimatedSpriteTextureParams.Draw(Transform: anTransform;
-  pContent: zglPTexture; Params: anPInstanceParameters; FX: LongWord);
+  pContent: zglPTexture; pInstance: anAnimationLayerSymbolInstance; FX: LongWord
+  );
 var scX, scY, angle_f: Single;
     LocalTranform: anTransform;
     frame: Integer;
     flX: Integer;
     flY: Integer;
+    inst: anAnimationLayerAnimatedSymbolInstance;
 begin
   LocalTranform := Transform;
   if not Assigned(pContent) then exit;
+  if not Assigned(TileSet) then exit;
 
   flX := anTransformClass.BoolToSign(Transform.Flip);
   flY := 1;
   scX := Width(pContent) * LocalTranform.Scale;
   scY := Height(pContent) * LocalTranform.Scale;
-  inherited Draw(Transform, pContent, Params, FX);
+  inherited Draw(Transform, pContent, pInstance, FX);
   angle_f := Transform.Rotation - Symbol.Rotation;
   anTransformClass.GetAngle(angle_f, Transform.Rotation - 90, Transform.Flip);
 
-  if Assigned(Params) then
-    frame := Params^.Frame
-  else
-    frame := 1;
+  inst := anAnimationLayerAnimatedSymbolInstance(pInstance);
+
+  if Assigned(inst) then begin
+    if Assigned(inst.TileSet) then
+      frame := inst.TileSet.TileList[Inst.Frame].Tile
+    else
+      frame := 0;
+  end else
+    frame := 0;
+
   asprite2d_Draw(pContent,
     LocalTranform.Position.X - scX / 2 - Symbol.PivotX * LocalTranform.Scale * flX,
     LocalTranform.Position.Y - scY / 2 - Symbol.PivotY * LocalTranform.Scale * flY,
@@ -4225,24 +4531,10 @@ begin
     (FX2D_FLIPX * Byte(Transform.Flip)));
 end;
 
-procedure anAnimatedSpriteTextureParams.Update(dt: Double;
-  Params: anPInstanceParameters);
-begin
-  Params^.dt += dt;
-  if Params^.dt >= 1000 / AnimationSpeed then begin
-    Params^.Frame += 1;
-    if Params^.Frame > TileTo then
-      Params^.Frame := TileFrom;
-    Params^.dt := 0;
-  end;
-end;
-
 constructor anAnimatedSpriteTextureParams.Create(pTexture: anTexture; pSymbol: anSymbol);
 begin
   inherited;
-  TileFrom := 1;
-  TileTo := 1;
-  AnimationSpeed := 30;
+  TileSet := nil;
 end;
 
 { anAtlasTexture }
@@ -4359,6 +4651,33 @@ begin
   dst := anAnimatedSpriteTexture(Dest);
 end;
 
+procedure anAnimatedSpriteTexture.SaveToRecord(rec: TDBRecord);
+var
+  ch_data: TDBRecord;
+  i: Integer;
+begin
+  inherited SaveToRecord(rec);
+  ch_data := rec.ChildByName['tile_sets'];
+  ch_data.ChildCount := TileSets.Count;
+  for i := 0 to TileSets.Count - 1 do
+    TileSets.Data[i].SaveToRecord(ch_data.Child[i]);
+end;
+
+procedure anAnimatedSpriteTexture.LoadFromRecord(rec: TDBRecord);
+var
+  ch_data: TDBRecord;
+  tile_set: anAnimatedSpriteTextureTileSet;
+  i: Integer;
+begin
+  inherited LoadFromRecord(rec);
+  ch_data := rec.ChildByName['tile_sets'];
+  for i := 0 to ch_data.ChildCount - 1 do begin
+    tile_set := anAnimatedSpriteTextureTileSet.Create(Self);
+    tile_set.LoadFromRecord(ch_data.Child[i]);
+    TileSets.Add(ch_data.Child[i].Name, tile_set);
+  end;
+end;
+
 function anAnimatedSpriteTexture.CreateParams(pSymbol: anSymbol
   ): anTextureParams;
 begin
@@ -4370,6 +4689,17 @@ begin
   inherited;
   TileX := 0;
   TileY := 0;
+  TileSets := anAnimatedSpriteTextureTileSetList.Create;
+end;
+
+destructor anAnimatedSpriteTexture.Destroy;
+var
+  i: Integer;
+begin
+  for i := 0 to TileSets.Count - 1 do
+    TileSets.Data[i].Free;
+  TileSets.Free;
+  inherited Destroy;
 end;
 
 { anTexture }
@@ -4525,11 +4855,10 @@ begin
   fRotatingPivot.Y := rec.ChildByName['rpivot_y'].AsSingle;
 end;
 
-procedure anSymbol.Draw(Transform: anTransform; pContent: zglPTexture;
-  Params: anPInstanceParameters);
+procedure anSymbol.Draw(Transform: anTransform; pContent: zglPTexture);
 begin
   if Assigned(TextureParams) then begin
-    TextureParams.Draw(Transform, pContent, Params);
+    TextureParams.Draw(Transform, pContent, nil);
   end;
 end;
 

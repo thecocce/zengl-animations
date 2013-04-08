@@ -255,7 +255,7 @@ uses u_main, u_render;
 
 procedure TEditorDeleteAnimationItem.UndoAction;
 begin
-  MainForm.RegisterAnimation(Editor.Project.Animation.AddAnimation(Animation, ItemName), Animation.Prototype);
+  MainForm.RegisterAnimation(Editor.Project.Animation.AddAnimation(Animation, ItemName), Animation.Prototype, true);
   inherited UndoAction;
 end;
 
@@ -296,7 +296,7 @@ procedure TEditorDeleteTextureItem.UndoAction;
 begin
   with MainForm do begin
     Editor.Project.Animation.AddTexture(ItemName, Texture);
-    RegisterTexture(Texture, GetTextureImgId(Texture));
+    RegisterTexture(Texture, GetTextureImgId(Texture), true);
   end;
   inherited UndoAction;
 end;
@@ -612,7 +612,7 @@ procedure TEditorDeleteSymbolItem.UndoAction;
 begin
   with MainForm do begin
     Editor.Project.Animation.AnimationLibrary.AddSymbol(Symbol, ItemName);
-    RegisterSymbol(Symbol);
+    RegisterSymbol(Symbol, true);
   end;
   inherited;
 end;
