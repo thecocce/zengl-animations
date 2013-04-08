@@ -16,11 +16,14 @@ type
     btnBrowse: TButton;
     btnExport: TButton;
     btnResetSize: TButton;
+    btnResetSize1: TButton;
     btnUpdate: TButton;
+    btnEditTileSets: TButton;
     ButtonsPanel: TButtonPanel;
     objApply: TCheckListBox;
     ObjectProperties: TTIPropertyGrid;
     objInfo: TLabel;
+    anAnimatedSpriteTexture: TTabSheet;
     ttl: TLabel;
     PropContent: TPageControl;
     anTexture: TTabSheet;
@@ -30,10 +33,12 @@ type
     procedure anAnimationBlenderShow(Sender: TObject);
     procedure anTextureContentShow(Sender: TObject);
     procedure btnBrowseClick(Sender: TObject);
+    procedure btnEditTileSetsClick(Sender: TObject);
     procedure btnExportClick(Sender: TObject);
     procedure btnResetSizeClick(Sender: TObject);
     procedure btnUpdateClick(Sender: TObject);
     procedure ButtonsPanelClick(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure objApplyClickCheck(Sender: TObject);
     procedure ObjectPropertiesClick(Sender: TObject);
     procedure OKButtonClick(Sender: TObject);
@@ -50,7 +55,7 @@ var
 
 implementation
 
-uses u_main;
+uses u_main, u_tilesets_form;
 
 {$R *.lfm}
 
@@ -113,6 +118,11 @@ begin
 
 end;
 
+procedure TPropertiesForm.FormShow(Sender: TObject);
+begin
+  ObjectProperties.SplitterX := ObjectProperties.Width div 2;
+end;
+
 procedure TPropertiesForm.objApplyClickCheck(Sender: TObject);
 var prxy: anBlenderObjectProxy;
 begin
@@ -158,6 +168,11 @@ begin
     FillTextureData(TextureData);
   end;
   od.Free;
+end;
+
+procedure TPropertiesForm.btnEditTileSetsClick(Sender: TObject);
+begin
+  TileSetsForm.Edit(u_animation.anAnimatedSpriteTexture(HandleObj));
 end;
 
 procedure TPropertiesForm.anTextureContentShow(Sender: TObject);

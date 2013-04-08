@@ -4,7 +4,7 @@
     <PathDelim Value="\"/>
     <Version Value="9"/>
     <BuildModes Active="debug"/>
-    <Units Count="54">
+    <Units Count="55">
       <Unit0>
         <Filename Value="AnimatioEditor.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -23,22 +23,21 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="u_main"/>
-        <EditorIndex Value="7"/>
+        <EditorIndex Value="9"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1127"/>
-        <CursorPos X="35" Y="1137"/>
+        <TopLine Value="1608"/>
+        <CursorPos X="33" Y="1616"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit1>
       <Unit2>
         <Filename Value="..\src\u_render.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="u_render"/>
-        <EditorIndex Value="3"/>
+        <EditorIndex Value="5"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1389"/>
-        <CursorPos X="3" Y="1396"/>
+        <TopLine Value="1185"/>
+        <CursorPos X="76" Y="1194"/>
         <UsageCount Value="200"/>
         <Loaded Value="True"/>
       </Unit2>
@@ -46,10 +45,10 @@
         <Filename Value="..\src\u_editorhistory.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="u_editorhistory"/>
-        <EditorIndex Value="4"/>
+        <EditorIndex Value="6"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="262"/>
-        <CursorPos X="53" Y="274"/>
+        <TopLine Value="601"/>
+        <CursorPos X="32" Y="615"/>
         <UsageCount Value="212"/>
         <Loaded Value="True"/>
       </Unit3>
@@ -62,11 +61,10 @@
         <UnitName Value="u_prop_form"/>
         <EditorIndex Value="2"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="34"/>
-        <CursorPos X="56" Y="39"/>
+        <TopLine Value="89"/>
+        <CursorPos X="1" Y="99"/>
         <UsageCount Value="203"/>
         <Loaded Value="True"/>
-        <LoadedDesigner Value="True"/>
       </Unit4>
       <Unit5>
         <Filename Value="..\src\u_proj_form.pas"/>
@@ -98,18 +96,18 @@
         <Filename Value="..\units\u_db.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="u_db"/>
-        <EditorIndex Value="6"/>
+        <EditorIndex Value="8"/>
         <WindowIndex Value="0"/>
         <TopLine Value="5"/>
         <CursorPos X="3" Y="16"/>
-        <UsageCount Value="29"/>
+        <UsageCount Value="50"/>
         <Loaded Value="True"/>
       </Unit7>
       <Unit8>
         <Filename Value="..\units\zglHeader.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="zglHeader"/>
-        <UsageCount Value="29"/>
+        <UsageCount Value="50"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit8>
       <Unit9>
@@ -119,45 +117,60 @@
         <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="552"/>
-        <CursorPos X="31" Y="567"/>
-        <UsageCount Value="29"/>
+        <TopLine Value="2586"/>
+        <CursorPos X="55" Y="2601"/>
+        <UsageCount Value="50"/>
         <Loaded Value="True"/>
       </Unit9>
       <Unit10>
+        <Filename Value="..\src\u_tilesets_form.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="TileSetsForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="u_tilesets_form"/>
+        <EditorIndex Value="3"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="254"/>
+        <CursorPos X="25" Y="262"/>
+        <UsageCount Value="34"/>
+        <Loaded Value="True"/>
+        <LoadedDesigner Value="True"/>
+      </Unit10>
+      <Unit11>
         <Filename Value="..\src\u_animation.pas"/>
         <UnitName Value="u_animation"/>
         <WindowIndex Value="0"/>
         <TopLine Value="2819"/>
         <CursorPos X="42" Y="2820"/>
-        <UsageCount Value="199"/>
-      </Unit10>
-      <Unit11>
+        <UsageCount Value="197"/>
+      </Unit11>
+      <Unit12>
         <Filename Value="..\..\..\other\zengl\headers\zglHeader.pas"/>
         <UnitName Value="zglHeader"/>
         <WindowIndex Value="0"/>
         <TopLine Value="693"/>
         <CursorPos X="3" Y="704"/>
-        <UsageCount Value="199"/>
-      </Unit11>
-      <Unit12>
+        <UsageCount Value="197"/>
+      </Unit12>
+      <Unit13>
         <Filename Value="..\..\..\common\u_db.pas"/>
         <UnitName Value="u_db"/>
         <WindowIndex Value="0"/>
         <TopLine Value="385"/>
         <CursorPos X="11" Y="404"/>
-        <UsageCount Value="199"/>
-      </Unit12>
-      <Unit13>
+        <UsageCount Value="197"/>
+      </Unit13>
+      <Unit14>
         <Filename Value="..\..\..\common\u_zglhandler.pas"/>
         <UnitName Value="u_zglhandler"/>
         <WindowIndex Value="0"/>
         <TopLine Value="68"/>
         <CursorPos X="64" Y="71"/>
-        <UsageCount Value="199"/>
+        <UsageCount Value="197"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
-      </Unit13>
-      <Unit14>
+      </Unit14>
+      <Unit15>
         <Filename Value="..\src\u_file_form.pas"/>
         <ComponentName Value="FileBrowseForm"/>
         <HasResources Value="True"/>
@@ -166,37 +179,37 @@
         <WindowIndex Value="0"/>
         <TopLine Value="68"/>
         <CursorPos X="1" Y="77"/>
-        <UsageCount Value="179"/>
+        <UsageCount Value="177"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
-      </Unit14>
-      <Unit15>
+      </Unit15>
+      <Unit16>
         <Filename Value="C:\lazarus\fpc\2.6.0\source\rtl\objpas\fgl.pp"/>
         <UnitName Value="fgl"/>
         <WindowIndex Value="0"/>
         <TopLine Value="130"/>
         <CursorPos X="3" Y="144"/>
-        <UsageCount Value="2"/>
+        <UsageCount Value="0"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
-      </Unit15>
-      <Unit16>
+      </Unit16>
+      <Unit17>
         <Filename Value="C:\lazarus\lcl\controls.pp"/>
         <UnitName Value="Controls"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1815"/>
         <CursorPos X="15" Y="2152"/>
-        <UsageCount Value="12"/>
+        <UsageCount Value="10"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
-      </Unit16>
-      <Unit17>
+      </Unit17>
+      <Unit18>
         <Filename Value="C:\lazarus\ideintf\propedits.pp"/>
         <UnitName Value="PropEdits"/>
         <WindowIndex Value="0"/>
         <TopLine Value="2719"/>
         <CursorPos X="1" Y="2723"/>
-        <UsageCount Value="23"/>
+        <UsageCount Value="21"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
-      </Unit17>
-      <Unit18>
+      </Unit18>
+      <Unit19>
         <Filename Value="..\src\u_anim_form.pas"/>
         <ComponentName Value="AnimationsForm"/>
         <ResourceBaseClass Value="Form"/>
@@ -204,288 +217,291 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="24"/>
+        <UsageCount Value="22"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
-      </Unit18>
-      <Unit19>
+      </Unit19>
+      <Unit20>
         <Filename Value="C:\codetyphon\lazarus\lcl\include\control.inc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1431"/>
         <CursorPos X="1" Y="1443"/>
-        <UsageCount Value="34"/>
-      </Unit19>
-      <Unit20>
+        <UsageCount Value="32"/>
+      </Unit20>
+      <Unit21>
         <Filename Value="C:\codetyphon\fpcsrc\rtl\objpas\classes\classesh.inc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="677"/>
         <CursorPos X="14" Y="686"/>
-        <UsageCount Value="95"/>
-      </Unit20>
-      <Unit21>
+        <UsageCount Value="93"/>
+      </Unit21>
+      <Unit22>
         <Filename Value="C:\codetyphon\lazarus\lcl\controls.pp"/>
         <UnitName Value="Controls"/>
         <WindowIndex Value="0"/>
         <TopLine Value="172"/>
         <CursorPos X="25" Y="191"/>
-        <UsageCount Value="44"/>
-      </Unit21>
-      <Unit22>
+        <UsageCount Value="42"/>
+      </Unit22>
+      <Unit23>
         <Filename Value="C:\codetyphon\fpcsrc\rtl\inc\objpash.inc"/>
-        <EditorIndex Value="5"/>
+        <EditorIndex Value="7"/>
         <WindowIndex Value="0"/>
         <TopLine Value="191"/>
         <CursorPos X="21" Y="201"/>
-        <UsageCount Value="72"/>
+        <UsageCount Value="82"/>
         <Loaded Value="True"/>
-      </Unit22>
-      <Unit23>
+      </Unit23>
+      <Unit24>
         <Filename Value="..\..\..\common\u_filehandler.pas"/>
         <UnitName Value="u_filehandler"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="3" Y="94"/>
-        <UsageCount Value="19"/>
+        <UsageCount Value="17"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
-      </Unit23>
-      <Unit24>
+      </Unit24>
+      <Unit25>
         <Filename Value="..\..\..\common\u_streamhandler.pas"/>
         <UnitName Value="u_streamhandler"/>
         <WindowIndex Value="0"/>
         <TopLine Value="7"/>
         <CursorPos X="17" Y="11"/>
-        <UsageCount Value="19"/>
+        <UsageCount Value="17"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
-      </Unit24>
-      <Unit25>
+      </Unit25>
+      <Unit26>
         <Filename Value="C:\codetyphon\lazarus\lcl\include\menuitem.inc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="265"/>
         <CursorPos X="1" Y="283"/>
-        <UsageCount Value="3"/>
-      </Unit25>
-      <Unit26>
+        <UsageCount Value="1"/>
+      </Unit26>
+      <Unit27>
         <Filename Value="C:\codetyphon\lazarus\ideintf\objectinspector.pp"/>
         <UnitName Value="ObjectInspector"/>
         <WindowIndex Value="0"/>
         <TopLine Value="2011"/>
         <CursorPos X="1" Y="2023"/>
-        <UsageCount Value="29"/>
-      </Unit26>
-      <Unit27>
+        <UsageCount Value="27"/>
+      </Unit27>
+      <Unit28>
         <Filename Value="..\..\..\common\u_bufferhandler.pas"/>
         <UnitName Value="u_bufferhandler"/>
         <WindowIndex Value="0"/>
         <TopLine Value="26"/>
         <CursorPos X="3" Y="48"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="8"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
-      </Unit27>
-      <Unit28>
+      </Unit28>
+      <Unit29>
         <Filename Value="..\..\..\common\u_buffers.pas"/>
         <UnitName Value="u_buffers"/>
         <WindowIndex Value="0"/>
         <TopLine Value="63"/>
         <CursorPos X="53" Y="76"/>
-        <UsageCount Value="0"/>
+        <UsageCount Value="8"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
-      </Unit28>
-      <Unit29>
+      </Unit29>
+      <Unit30>
         <Filename Value="C:\codetyphon\fpcsrc\rtl\objpas\types.pp"/>
         <UnitName Value="types"/>
         <WindowIndex Value="0"/>
         <TopLine Value="112"/>
         <CursorPos X="27" Y="124"/>
-        <UsageCount Value="38"/>
-      </Unit29>
-      <Unit30>
+        <UsageCount Value="36"/>
+      </Unit30>
+      <Unit31>
         <Filename Value="C:\codetyphon\fpcsrc\rtl\win\wininc\struct.inc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="204"/>
         <CursorPos X="6" Y="217"/>
-        <UsageCount Value="19"/>
-      </Unit30>
-      <Unit31>
-        <Filename Value="C:\codetyphon\lazarus\lcl\comctrls.pp"/>
-        <UnitName Value="ComCtrls"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="2609"/>
-        <CursorPos X="22" Y="2621"/>
-        <UsageCount Value="20"/>
-        <DefaultSyntaxHighlighter Value="Delphi"/>
+        <UsageCount Value="17"/>
       </Unit31>
       <Unit32>
+        <Filename Value="C:\codetyphon\lazarus\lcl\comctrls.pp"/>
+        <UnitName Value="ComCtrls"/>
+        <EditorIndex Value="4"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="949"/>
+        <CursorPos X="14" Y="959"/>
+        <UsageCount Value="22"/>
+        <Loaded Value="True"/>
+      </Unit32>
+      <Unit33>
         <Filename Value="C:\codetyphon\fpcsrc\rtl\objpas\fgl.pp"/>
         <UnitName Value="fgl"/>
         <WindowIndex Value="0"/>
         <TopLine Value="111"/>
         <CursorPos X="17" Y="128"/>
-        <UsageCount Value="50"/>
-      </Unit32>
-      <Unit33>
-        <Filename Value="C:\codetyphon\lazarus\ideintf\propedits.pp"/>
-        <UnitName Value="PropEdits"/>
-        <WindowIndex Value="0"/>
-        <TopLine Value="3006"/>
-        <CursorPos X="1" Y="3018"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="48"/>
       </Unit33>
       <Unit34>
+        <Filename Value="C:\codetyphon\lazarus\ideintf\propedits.pp"/>
+        <UnitName Value="PropEdits"/>
+        <EditorIndex Value="10"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1232"/>
+        <CursorPos X="22" Y="1234"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
+      </Unit34>
+      <Unit35>
         <Filename Value="C:\codetyphon\lazarus\lcl\include\toolbutton.inc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="128"/>
         <CursorPos X="1" Y="139"/>
-        <UsageCount Value="28"/>
-      </Unit34>
-      <Unit35>
+        <UsageCount Value="26"/>
+      </Unit35>
+      <Unit36>
         <Filename Value="C:\codetyphon\lazarus\lcl\stdctrls.pp"/>
         <UnitName Value="StdCtrls"/>
         <WindowIndex Value="0"/>
         <TopLine Value="540"/>
         <CursorPos X="20" Y="551"/>
-        <UsageCount Value="2"/>
+        <UsageCount Value="0"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
-      </Unit35>
-      <Unit36>
+      </Unit36>
+      <Unit37>
         <Filename Value="C:\codetyphon\lazarus\lcl\include\customlistbox.inc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="556"/>
         <CursorPos X="3" Y="558"/>
-        <UsageCount Value="2"/>
-      </Unit36>
-      <Unit37>
+        <UsageCount Value="0"/>
+      </Unit37>
+      <Unit38>
         <Filename Value="..\..\..\other\lnet\lib\lnetssl.pp"/>
         <UnitName Value="lNetSSL"/>
         <WindowIndex Value="0"/>
         <TopLine Value="377"/>
         <CursorPos X="28" Y="16"/>
-        <UsageCount Value="5"/>
+        <UsageCount Value="3"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
-      </Unit37>
-      <Unit38>
+      </Unit38>
+      <Unit39>
         <Filename Value="C:\codetyphon\fpcsrc\packages\hash\src\crc.pas"/>
         <UnitName Value="crc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="24"/>
         <CursorPos X="1" Y="31"/>
-        <UsageCount Value="32"/>
-      </Unit38>
-      <Unit39>
+        <UsageCount Value="30"/>
+      </Unit39>
+      <Unit40>
         <Filename Value="C:\codetyphon\lazarus\lcl\include\monitor.inc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="88" Y="7"/>
-        <UsageCount Value="5"/>
-      </Unit39>
-      <Unit40>
+        <UsageCount Value="3"/>
+      </Unit40>
+      <Unit41>
         <Filename Value="C:\codetyphon\lazarus\lcl\graphics.pp"/>
         <UnitName Value="Graphics"/>
         <WindowIndex Value="0"/>
         <TopLine Value="640"/>
         <CursorPos X="14" Y="656"/>
-        <UsageCount Value="23"/>
-      </Unit40>
-      <Unit41>
+        <UsageCount Value="21"/>
+      </Unit41>
+      <Unit42>
         <Filename Value="C:\codetyphon\lazarus\lcl\include\wincontrol.inc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="3575"/>
         <CursorPos X="49" Y="3584"/>
-        <UsageCount Value="5"/>
-      </Unit41>
-      <Unit42>
+        <UsageCount Value="3"/>
+      </Unit42>
+      <Unit43>
         <Filename Value="C:\codetyphon\lazarus\lcl\lclrescache.pas"/>
         <UnitName Value="LCLResCache"/>
         <WindowIndex Value="0"/>
         <TopLine Value="447"/>
         <CursorPos X="41" Y="458"/>
-        <UsageCount Value="3"/>
-      </Unit42>
-      <Unit43>
+        <UsageCount Value="1"/>
+      </Unit43>
+      <Unit44>
         <Filename Value="C:\codetyphon\lazarus\components\pl_VirtualTrees\pl_virtualtrees.pas"/>
         <UnitName Value="pl_virtualtrees"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="5" Y="10"/>
-        <UsageCount Value="9"/>
-      </Unit43>
-      <Unit44>
+        <UsageCount Value="7"/>
+      </Unit44>
+      <Unit45>
         <Filename Value="C:\codetyphon\lazarus\components\pl_VirtualTrees\source\VirtualTrees.pas"/>
         <UnitName Value="VirtualTrees"/>
         <WindowIndex Value="0"/>
         <TopLine Value="3006"/>
         <CursorPos X="14" Y="3014"/>
-        <UsageCount Value="30"/>
-      </Unit44>
-      <Unit45>
+        <UsageCount Value="28"/>
+      </Unit45>
+      <Unit46>
         <Filename Value="C:\codetyphon\lazarus\components\pl_lclextensions\source\delphicompat.pas"/>
         <UnitName Value="DelphiCompat"/>
         <WindowIndex Value="0"/>
         <TopLine Value="128"/>
         <CursorPos X="34" Y="136"/>
-        <UsageCount Value="3"/>
-      </Unit45>
-      <Unit46>
+        <UsageCount Value="1"/>
+      </Unit46>
+      <Unit47>
         <Filename Value="C:\codetyphon\lazarus\components\pl_lclextensions\source\include\uses.inc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="3"/>
-      </Unit46>
-      <Unit47>
+        <UsageCount Value="1"/>
+      </Unit47>
+      <Unit48>
         <Filename Value="C:\codetyphon\lazarus\components\pl_VirtualTrees\source\units\virtualpanningwindow.pas"/>
         <UnitName Value="virtualpanningwindow"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="3"/>
-      </Unit47>
-      <Unit48>
+        <UsageCount Value="1"/>
+      </Unit48>
+      <Unit49>
         <Filename Value="C:\codetyphon\lazarus\components\pl_VirtualTrees\source\VTGraphics.pas"/>
         <UnitName Value="VTGraphics"/>
         <WindowIndex Value="0"/>
         <TopLine Value="12"/>
         <CursorPos X="1" Y="32"/>
-        <UsageCount Value="3"/>
-      </Unit48>
-      <Unit49>
+        <UsageCount Value="1"/>
+      </Unit49>
+      <Unit50>
         <Filename Value="C:\codetyphon\lazarus\components\pl_VirtualTrees\source\include\vtgraphicsi.inc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="3"/>
-      </Unit49>
-      <Unit50>
+        <UsageCount Value="1"/>
+      </Unit50>
+      <Unit51>
         <Filename Value="C:\codetyphon\lazarus\components\pl_VirtualTrees\source\include\vtgraphicsi_win32.inc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="289"/>
         <CursorPos X="17" Y="302"/>
-        <UsageCount Value="9"/>
-      </Unit50>
-      <Unit51>
+        <UsageCount Value="7"/>
+      </Unit51>
+      <Unit52>
         <Filename Value="C:\codetyphon\lazarus\lcl\forms.pp"/>
         <UnitName Value="Forms"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="734"/>
-        <CursorPos X="14" Y="743"/>
+        <TopLine Value="713"/>
+        <CursorPos X="15" Y="724"/>
         <UsageCount Value="13"/>
-      </Unit51>
-      <Unit52>
+      </Unit52>
+      <Unit53>
         <Filename Value="D:\PrivateFolder\games\92\source\units\u_animation.pas"/>
         <UnitName Value="u_animation"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="8"/>
-      </Unit52>
-      <Unit53>
+        <UsageCount Value="6"/>
+      </Unit53>
+      <Unit54>
         <Filename Value="C:\codetyphon\lazarus\packager\registration\fcllaz.pas"/>
         <UnitName Value="fcllaz"/>
-        <EditorIndex Value="8"/>
+        <EditorIndex Value="11"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="14"/>
+        <UsageCount Value="24"/>
         <Loaded Value="True"/>
-      </Unit53>
+      </Unit54>
     </Units>
     <General>
       <ActiveWindowIndexAtStart Value="0"/>
@@ -493,136 +509,127 @@
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
         <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="1443" Column="48" TopLine="1437"/>
+        <Caret Line="3174" Column="1" TopLine="3164"/>
       </Position1>
       <Position2>
         <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="566" Column="95" TopLine="555"/>
+        <Caret Line="3062" Column="1" TopLine="3052"/>
       </Position2>
       <Position3>
         <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="1019" Column="59" TopLine="1009"/>
+        <Caret Line="3063" Column="1" TopLine="3052"/>
       </Position3>
       <Position4>
         <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="1025" Column="68" TopLine="1007"/>
+        <Caret Line="2333" Column="1" TopLine="2323"/>
       </Position4>
       <Position5>
         <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="1069" Column="92" TopLine="1052"/>
+        <Caret Line="2334" Column="1" TopLine="2323"/>
       </Position5>
       <Position6>
         <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="1439" Column="68" TopLine="1430"/>
+        <Caret Line="3062" Column="1" TopLine="3052"/>
       </Position6>
       <Position7>
         <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="1458" Column="18" TopLine="1436"/>
+        <Caret Line="3063" Column="1" TopLine="3052"/>
       </Position7>
       <Position8>
         <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="1392" Column="38" TopLine="1384"/>
+        <Caret Line="2333" Column="1" TopLine="2323"/>
       </Position8>
       <Position9>
         <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="1400" Column="38" TopLine="1384"/>
+        <Caret Line="2334" Column="1" TopLine="2323"/>
       </Position9>
       <Position10>
         <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="1403" Column="40" TopLine="1385"/>
+        <Caret Line="3062" Column="1" TopLine="3052"/>
       </Position10>
       <Position11>
         <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="1408" Column="40" TopLine="1390"/>
+        <Caret Line="3065" Column="1" TopLine="3052"/>
       </Position11>
       <Position12>
         <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="3878" Column="40" TopLine="3860"/>
+        <Caret Line="3168" Column="46" TopLine="3160"/>
       </Position12>
       <Position13>
         <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="582" Column="30" TopLine="571"/>
+        <Caret Line="1069" Column="3" TopLine="1059"/>
       </Position13>
       <Position14>
         <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="601" Column="32" TopLine="583"/>
+        <Caret Line="1567" Column="17" TopLine="1544"/>
       </Position14>
       <Position15>
         <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="603" Column="30" TopLine="585"/>
+        <Caret Line="1553" Column="1" TopLine="1544"/>
       </Position15>
       <Position16>
-        <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="605" Column="43" TopLine="587"/>
+        <Filename Value="..\src\u_main.pas"/>
+        <Caret Line="565" Column="26" TopLine="557"/>
       </Position16>
       <Position17>
-        <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="609" Column="51" TopLine="591"/>
+        <Filename Value="..\src\u_main.pas"/>
+        <Caret Line="566" Column="39" TopLine="557"/>
       </Position17>
       <Position18>
-        <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="1368" Column="30" TopLine="1350"/>
+        <Filename Value="..\src\u_main.pas"/>
+        <Caret Line="579" Column="39" TopLine="562"/>
       </Position18>
       <Position19>
         <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="1370" Column="38" TopLine="1352"/>
+        <Caret Line="1567" Column="1" TopLine="1542"/>
       </Position19>
       <Position20>
-        <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="1384" Column="38" TopLine="1366"/>
+        <Filename Value="..\src\u_main.pas"/>
+        <Caret Line="2249" Column="137" TopLine="2232"/>
       </Position20>
       <Position21>
-        <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="1392" Column="38" TopLine="1374"/>
+        <Filename Value="..\src\u_main.pas"/>
+        <Caret Line="526" Column="19" TopLine="509"/>
       </Position21>
       <Position22>
-        <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="1400" Column="38" TopLine="1382"/>
+        <Filename Value="..\src\u_main.pas"/>
+        <Caret Line="589" Column="44" TopLine="564"/>
       </Position22>
       <Position23>
-        <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="1403" Column="40" TopLine="1385"/>
+        <Filename Value="..\src\u_main.pas"/>
+        <Caret Line="582" Column="5" TopLine="557"/>
       </Position23>
       <Position24>
-        <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="1440" Column="82" TopLine="1429"/>
+        <Filename Value="..\src\u_main.pas"/>
+        <Caret Line="603" Column="11" TopLine="592"/>
       </Position24>
       <Position25>
-        <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="560" Column="20" TopLine="557"/>
+        <Filename Value="..\src\u_main.pas"/>
+        <Caret Line="604" Column="17" TopLine="595"/>
       </Position25>
       <Position26>
-        <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="586" Column="54" TopLine="568"/>
+        <Filename Value="..\src\u_main.pas"/>
+        <Caret Line="637" Column="87" TopLine="635"/>
       </Position26>
       <Position27>
-        <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="603" Column="57" TopLine="585"/>
+        <Filename Value="..\src\u_main.pas"/>
+        <Caret Line="604" Column="11" TopLine="595"/>
       </Position27>
       <Position28>
-        <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="622" Column="60" TopLine="604"/>
+        <Filename Value="..\src\u_main.pas"/>
+        <Caret Line="605" Column="17" TopLine="595"/>
       </Position28>
       <Position29>
-        <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="650" Column="43" TopLine="632"/>
+        <Filename Value="..\src\u_main.pas"/>
+        <Caret Line="607" Column="24" TopLine="597"/>
       </Position29>
       <Position30>
         <Filename Value="..\units\u_animation.pas"/>
-        <Caret Line="670" Column="46" TopLine="650"/>
+        <Caret Line="684" Column="25" TopLine="673"/>
       </Position30>
     </JumpHistory>
   </ProjectSession>
   <Debugging>
-    <BreakPoints Count="1">
-      <Item1>
-        <Kind Value="bpkSource"/>
-        <WatchScope Value="wpsLocal"/>
-        <WatchKind Value="wpkWrite"/>
-        <Source Value="..\src\u_main.pas"/>
-        <Line Value="1490"/>
-      </Item1>
-    </BreakPoints>
     <Watches Count="1">
       <Item1>
         <Expression Value="Visible"/>

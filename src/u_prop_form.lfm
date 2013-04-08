@@ -1,18 +1,19 @@
 object PropertiesForm: TPropertiesForm
   Left = 304
-  Height = 378
+  Height = 453
   Top = 201
-  Width = 460
+  Width = 507
   Caption = 'PropertiesForm'
-  ClientHeight = 378
-  ClientWidth = 460
+  ClientHeight = 453
+  ClientWidth = 507
+  OnShow = FormShow
   Position = poScreenCenter
   LCLVersion = '1.1'
   object ObjectProperties: TTIPropertyGrid
     Left = 0
-    Height = 254
+    Height = 329
     Top = 0
-    Width = 460
+    Width = 507
     Align = alClient
     BorderStyle = bsNone
     DefaultItemHeight = 20
@@ -22,15 +23,13 @@ object PropertiesForm: TPropertiesForm
     NameFont.Color = clWindowText
     NameFont.Style = [fsBold]
     OnClick = ObjectPropertiesClick
-    PreferredSplitterX = 200
-    SplitterX = 200
     ValueFont.Color = clMaroon
   end
   object ButtonsPanel: TButtonPanel
     Left = 6
     Height = 34
-    Top = 338
-    Width = 448
+    Top = 413
+    Width = 495
     OKButton.Name = 'OKButton'
     OKButton.DefaultCaption = True
     OKButton.OnClick = OKButtonClick
@@ -47,18 +46,41 @@ object PropertiesForm: TPropertiesForm
   object PropContent: TPageControl
     Left = 0
     Height = 73
-    Top = 259
-    Width = 460
-    ActivePage = anTextureContent
+    Top = 334
+    Width = 507
+    ActivePage = anAnimatedSpriteTexture
     Align = alBottom
     ShowTabs = False
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 2
     Visible = False
+    object anAnimatedSpriteTexture: TTabSheet
+      Caption = 'anAnimatedSpriteTexture'
+      ClientHeight = 65
+      ClientWidth = 499
+      object btnResetSize1: TButton
+        Left = 4
+        Height = 32
+        Top = 6
+        Width = 119
+        Caption = 'Reset texture size'
+        OnClick = btnResetSizeClick
+        TabOrder = 0
+      end
+      object btnEditTileSets: TButton
+        Left = 128
+        Height = 31
+        Top = 7
+        Width = 124
+        Caption = 'Edit TileSets'
+        OnClick = btnEditTileSetsClick
+        TabOrder = 1
+      end
+    end
     object anTexture: TTabSheet
       Caption = 'anTexture'
-      ClientHeight = 68
-      ClientWidth = 463
+      ClientHeight = 65
+      ClientWidth = 452
       object btnResetSize: TButton
         Left = 6
         Height = 32
@@ -117,12 +139,12 @@ object PropertiesForm: TPropertiesForm
     end
     object anAnimationBlender: TTabSheet
       Caption = 'anAnimationBlender'
-      ClientHeight = 121
+      ClientHeight = 65
       ClientWidth = 452
       OnShow = anAnimationBlenderShow
       object objApply: TCheckListBox
         Left = 0
-        Height = 104
+        Height = 48
         Top = 17
         Width = 452
         Align = alClient
@@ -148,8 +170,8 @@ object PropertiesForm: TPropertiesForm
     Cursor = crVSplit
     Left = 0
     Height = 5
-    Top = 254
-    Width = 460
+    Top = 329
+    Width = 507
     Align = alBottom
     ResizeAnchor = akBottom
   end

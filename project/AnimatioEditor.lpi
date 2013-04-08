@@ -87,7 +87,7 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="10">
+    <Units Count="11">
       <Unit0>
         <Filename Value="AnimatioEditor.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -150,6 +150,14 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="u_animation"/>
       </Unit9>
+      <Unit10>
+        <Filename Value="..\src\u_tilesets_form.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="TileSetsForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="u_tilesets_form"/>
+      </Unit10>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
