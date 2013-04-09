@@ -264,8 +264,6 @@ begin
   edtTile.Text := IntToStr(pTile.Tile);
   edtTile.Enabled := true;
   edtTile.Font.Color := 0;
-
-  edtTile.SetFocus;
 end;
 
 procedure TTileSetsForm.ResetTile;
