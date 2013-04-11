@@ -4112,6 +4112,11 @@ constructor anAtlasTextureParams.Create(pTexture: anTexture; pSymbol: anSymbol);
 begin
   inherited;
   Zone := nil;
+
+  {$IFDEF EDITOR}
+  if Assigned(Texture) and (anAtlasTexture(Texture).Zones.Count > 0) then
+    Zone := anAtlasTexture(Texture).Zones.Data[0];
+  {$ENDIF}
 end;
 
 { anStaticSpriteTextureParams }
@@ -4535,6 +4540,10 @@ constructor anAnimatedSpriteTextureParams.Create(pTexture: anTexture; pSymbol: a
 begin
   inherited;
   TileSet := nil;
+  {$IFDEF EDITOR}
+  if Assigned(Texture) and (anAnimatedSpriteTexture(Texture).TileSets.Count > 0) then
+    TileSet := anAnimatedSpriteTexture(Texture).TileSets.Data[0];
+  {$ENDIF}
 end;
 
 { anAtlasTexture }
