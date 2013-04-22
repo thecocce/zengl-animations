@@ -1831,7 +1831,7 @@ var
 begin
   inst := LastInstance;
   while Assigned(Inst) do begin
-    if (Inst.Name <= Name) then
+    if (Inst.Name = Name) then
        Exit(inst);
     inst := inst.Prev;
   end;
