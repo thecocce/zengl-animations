@@ -863,9 +863,10 @@ type
       fSwapContent: anTextureContent;
       fTextureData: Pointer;
       fState: anAnimationState;
+      procedure setSwapContent(AValue: anTextureContent);
     public
       property TextureData: Pointer read fTextureData write fTextureData;
-      property SwapContent: anTextureContent read fSwapContent write fSwapContent;
+      property SwapContent: anTextureContent read fSwapContent write setSwapContent;
       property State: anAnimationState read fState write fState;
 
       procedure Play; override;
@@ -2328,6 +2329,19 @@ end;
 
 { anAnimationLayerSymbolInstance }
 
+procedure anAnimationLayerSymbolInstance.setSwapContent(AValue: anTextureContent
+  );
+begin
+  if fSwapContent = AValue then Exit;
+  anAnimationSymbolObject(ObjectTo).Symbol.TextureParams.ReleaseTexture(TextureData);
+  fSwapContent := AValue;
+  if Assigned(SwapContent) then begin
+    TextureData := SwapContent.TextureData;
+  end else begin
+    TextureData := anAnimationSymbolObject(ObjectTo).Symbol.TextureParams.GetTexture;
+  end;
+end;
+
 procedure anAnimationLayerSymbolInstance.Play;
 begin
   State := asPlaying;
@@ -2363,7 +2377,7 @@ constructor anAnimationLayerSymbolInstance.Create(
   pIntanceTo: anAnimationInstance; pObjectTo: anAnimationLayerObject;
   pHolder: anAnimationLOInstanceHolder);
 begin
-  SwapContent := nil;
+  fSwapContent := nil;
   inherited Create(pIntanceTo, pObjectTo, pHolder);
   TextureData := anAnimationSymbolObject(ObjectTo).Symbol.TextureParams.GetTexture;
   Stop(False);
@@ -2371,7 +2385,8 @@ end;
 
 destructor anAnimationLayerSymbolInstance.Destroy;
 begin
-  anAnimationSymbolObject(ObjectTo).Symbol.TextureParams.ReleaseTexture(TextureData);
+  if not Assigned(SwapContent) then
+    anAnimationSymbolObject(ObjectTo).Symbol.TextureParams.ReleaseTexture(TextureData);
   inherited Destroy;
 end;
 
