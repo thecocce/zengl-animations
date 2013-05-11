@@ -8,7 +8,7 @@ unit u_animation;
    | Requires: | u_db, zengl, generics (fgl unit)                   |
    |----------------------------------------------------------------|
    |   Author: | desertkun                                          |
-   |   E-mail: | desertlun@gmail.com                                |
+   |   E-mail: | desertkun@gmail.com                                |
    |	 Help: | http://zengl.org/wiki/doku.php?id=animations       |
    |      SVN: | https://zengl-animations.googlecode.com/svn/trunk  |
    *----------------------------------------------------------------*
